@@ -1,7 +1,10 @@
 /* eslint-disable default-case */
+import axios from 'axios';
 NodeList.prototype.all = function (fn) {this.forEach((el, idx) => fn(el, idx))}
 export const useEl = (el = null) => document.querySelector(el);
 export const useEls = (el = null) => document.querySelectorAll(el);
+
+export const useAxios = axios.create({ baseURL: 'http://bpcp1.iptime.org:8080', timeout: 10000 })
 
 export const useFetch = ( _url = '/', task = '', _params = {}, _success = null, _error = null, options = false) => {
   let params = {..._params};
@@ -585,7 +588,7 @@ export const useAlert = {
       xBtn.onclick = () => this.close(dom);
     }
     window.setTimeout(() => {
-      dom.style.top = 60 * count + 10 + 'px';
+      dom.style.top = 80 * count + 10 + 'px';
       progress.style.width = '100%';
     }, 0);
     this.autoClose(dom);
