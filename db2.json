@@ -1,0 +1,402 @@
+{
+  "shopCouponList": [
+    {
+      "id": 1,
+      "shopId": 1,
+      "title": "할인쿠폰1",
+      "description": "모든 품목 50% 할인",
+      "startDT": "2021-01-01",
+      "endDT": "2022-01-20",
+      "count": 1200,
+      "useCount": 1,
+      "open": 1
+    },
+    {
+      "id": 2,
+      "shopId": 1,
+      "title": "할인쿠폰2",
+      "description": "모든 품목 30% 할인",
+      "startDT": "2021-01-01",
+      "endDT": "2022-01-10",
+      "count": 15555500,
+      "useCount": 0,
+      "open": 1
+    },
+    {
+      "id": 3,
+      "shopId": 1,
+      "title": "할인쿠폰3",
+      "description": "모든 품목 10% 할인",
+      "startDT": "2021-01-01",
+      "endDT": "2022-12-31",
+      "count": 1500,
+      "useCount": 0,
+      "open": 0
+    },
+    {
+      "id": 4,
+      "shopId": "1",
+      "title": "테스트 쿠폰",
+      "description": "테스트용으로 쿠폰 생성",
+      "startDT": "2022-02-01",
+      "endDT": "2022-12-31",
+      "count": 2022,
+      "useCount": 0,
+      "open": 1
+    },
+    {
+      "id": 5,
+      "shopId": "1",
+      "title": "a",
+      "description": "aaaaa",
+      "startDT": "2022-01-12",
+      "endDT": "2022-01-21",
+      "count": 222222,
+      "useCount": 2,
+      "open": 1
+    }
+  ],
+  "useShopCouponList": [
+    {
+      "id": 1,
+      "memberId": 1,
+      "shopId": 1,
+      "couponId": 1,
+      "couponName": "할인쿠폰1",
+      "description": "모든 품목 10% 할인",
+      "downDT": "2022-01-14 11:00:00",
+      "endDT": "2022-12-31 00:00:00",
+      "use": 0
+    },
+    {
+      "memberId": 1,
+      "shopId": "1",
+      "couponId": 5,
+      "couponName": "a",
+      "description": "aaaaa",
+      "downDT": "2022-01-14 17:53:36",
+      "endDT": "2022-01-21",
+      "use": 1,
+      "id": 2
+    },
+    {
+      "memberId": 1,
+      "shopId": "1",
+      "couponId": 5,
+      "couponName": "a",
+      "description": "aaaaa",
+      "downDT": "2022-01-14 17:55:02",
+      "endDT": "2022-01-21",
+      "use": 0,
+      "id": 3
+    }
+  ],
+  "shopReservationList": [
+    {
+      "id": 1,
+      "userId": 1,
+      "shopId": 1,
+      "userName": "홍길동1",
+      "userPhone": "010-0000-1111",
+      "reservName": "홍길동1",
+      "reservDate": "2022-11-21",
+      "reservTime": "18:10",
+      "count1": 2,
+      "count2": 1,
+      "date": "2020-01-20 15:48:52",
+      "state": 1
+    },
+    {
+      "userId": 2,
+      "shopId": 1,
+      "userName": "홍길동2",
+      "userPhone": "010-2525-2525",
+      "reservName": "홍길동2",
+      "reservDate": "2022-01-25",
+      "reservTime": "16:27",
+      "count1": 3,
+      "count2": 0,
+      "state": 2,
+      "date": "2020-01-19 17:58:50",
+      "id": 2
+    },
+    {
+      "shopId": 1,
+      "userId": 4,
+      "userName": "홍길동4",
+      "userPhone": "010-0000-1111",
+      "reservName": "홍길동4",
+      "reservDate": "2022-12-28",
+      "reservTime": "18:00",
+      "count1": 2,
+      "count2": 0,
+      "state": 3,
+      "date": "2020-01-15 12:21:25",
+      "id": 3
+    },
+    {
+      "shopId": 1,
+      "userId": 1,
+      "userName": "홍길동1",
+      "userPhone": "010-0000-1111",
+      "reservName": "홍길동1",
+      "reservDate": "2022-01-20",
+      "reservTime": "18:57",
+      "count1": 4,
+      "count2": 1,
+      "state": 0,
+      "date": "2020-01-10 18:01:01",
+      "id": 4
+    },
+    {
+      "shopId": 1,
+      "userId": 1,
+      "userName": "전상욱",
+      "userPhone": "010-0000-1111",
+      "reservName": "AAAAAAAA",
+      "reservDate": "2022-01-24",
+      "reservTime": "11:41",
+      "count1": 2,
+      "count2": 0,
+      "state": 1,
+      "id": 5
+    },
+    {
+      "shopId": 1,
+      "userId": 1,
+      "userName": "전상욱",
+      "userPhone": "010-0000-1111",
+      "reservName": "BBBBBBB",
+      "reservDate": "2022-01-26",
+      "reservTime": "01:42",
+      "count1": 2,
+      "count2": 1,
+      "state": 2,
+      "id": 6
+    }
+  ],
+  "shopWaitList": [
+    {
+      "id": 1,
+      "shopId": 1,
+      "userId": 1,
+      "userName": "홍길동1",
+      "count1": 4,
+      "count2": 1,
+      "date": "2020-01-10 18:01:01",
+      "state": 0
+    },
+    {
+      "id": 2,
+      "shopId": 1,
+      "userId": 2,
+      "userName": "홍길동2",
+      "count1": 2,
+      "count2": 0,
+      "date": "2020-01-05 18:01:01",
+      "state": 0
+    },
+    {
+      "shopId": 1,
+      "userId": 1,
+      "userName": "전상욱",
+      "count1": 2,
+      "count2": 1,
+      "date": "2022-01-24 11:05:16",
+      "state": 2,
+      "id": 3
+    },
+    {
+      "shopId": 1,
+      "userId": 1,
+      "userName": "전상욱",
+      "count1": 2,
+      "count2": 0,
+      "date": "2022-01-24 11:43:22",
+      "state": 2,
+      "id": 4
+    }
+  ],
+  "DlabReservationList": [
+    {
+      "id": 1,
+      "userId": 1,
+      "positionId": 1,
+      "positionName": "D-LAB 1",
+      "userName": "홍길동1",
+      "userPhone": "010-0000-1111",
+      "reservName": "홍길동1",
+      "startDT": "2020-01-20 15:48:00",
+      "endDT": "2020-01-20 16:48:00",
+      "state": 3
+    },
+    {
+      "id": 2,
+      "userId": 2,
+      "positionId": 1,
+      "positionName": "D-LAB 1",
+      "userName": "홍길동2",
+      "userPhone": "010-0000-2222",
+      "reservName": "홍길동2",
+      "startDT": "2021-12-11 17:00:00",
+      "endDT": "2021-12-11 18:00:00",
+      "state": 0
+    },
+    {
+      "userId": 1,
+      "positionId": 1,
+      "positionName": "D-LAB 1",
+      "userName": "전상욱",
+      "userPhone": "010-0000-1111",
+      "reservName": "전상욱",
+      "startDT": "2022-01-24 18:00:00",
+      "endDT": "2022-01-24 19:00:00",
+      "state": 0,
+      "id": 3
+    },
+    {
+      "userId": 1,
+      "positionId": 1,
+      "positionName": "D-LAB 1",
+      "userName": "전상욱",
+      "userPhone": "010-0000-1111",
+      "reservName": "AAAAAAAAA",
+      "startDT": "2022-01-25 19:10",
+      "endDT": "2022-01-25 20:10:00",
+      "state": 0,
+      "id": 4
+    }
+  ],
+  "DlabMonthChartList": [
+    {
+      "date": 1,
+      "percent": 70
+    },
+    {
+      "date": 2,
+      "percent": 70
+    },
+    {
+      "date": 3,
+      "percent": 70
+    },
+    {
+      "date": 4,
+      "percent": 70
+    },
+    {
+      "date": 5,
+      "percent": 70
+    },
+    {
+      "date": 6,
+      "percent": 70
+    },
+    {
+      "date": 7,
+      "percent": 70
+    },
+    {
+      "date": 10,
+      "percent": 70
+    },
+    {
+      "date": 11,
+      "percent": 70
+    },
+    {
+      "date": 12,
+      "percent": 70
+    },
+    {
+      "date": 13,
+      "percent": 70
+    },
+    {
+      "date": 14,
+      "percent": 70
+    },
+    {
+      "date": 20,
+      "percent": 70
+    },
+    {
+      "date": 21,
+      "percent": 70
+    },
+    {
+      "date": 22,
+      "percent": 70
+    },
+    {
+      "date": 30,
+      "percent": 70
+    },
+    {
+      "date": 31,
+      "percent": 70
+    }
+  ],
+  "DlabYearChartList": [
+    {
+      "year": 2022,
+      "month": 1,
+      "data": 50
+    },
+    {
+      "year": 2022,
+      "month": 2,
+      "data": 30
+    },
+    {
+      "year": 2022,
+      "month": 3,
+      "data": 50
+    },
+    {
+      "year": 2022,
+      "month": 4,
+      "data": 70
+    },
+    {
+      "year": 2022,
+      "month": 5,
+      "data": 20
+    },
+    {
+      "year": 2022,
+      "month": 6,
+      "data": 30
+    },
+    {
+      "year": 2022,
+      "month": 7,
+      "data": 80
+    },
+    {
+      "year": 2022,
+      "month": 8,
+      "data": 10
+    },
+    {
+      "year": 2022,
+      "month": 9,
+      "data": 40
+    },
+    {
+      "year": 2022,
+      "month": 10,
+      "data": 50
+    },
+    {
+      "year": 2022,
+      "month": 11,
+      "data": 50
+    },
+    {
+      "year": 2022,
+      "month": 12,
+      "data": 90
+    }
+  ]
+}

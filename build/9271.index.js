@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkbu=self.webpackChunkbu||[]).push([[9271],{9271:(e,t,r)=>{r.r(t),r.d(t,{default:()=>i});var s=function(){var e=this.$createElement;return(this._self._c||e)("router-view")};s._withStripped=!0;var u=(0,r(1900).Z)({},s,[],!1,null,"55114cf2",null);u.options.__file="src/pages/2/University/index.vue";const i=u.exports}}]);

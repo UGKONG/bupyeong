@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkbu=self.webpackChunkbu||[]).push([[4111],{4111:(e,s,t)=>{t.r(s),t.d(s,{default:()=>n});var r=function(){var e=this.$createElement;return(this._self._c||e)("router-view")};r._withStripped=!0;var u=(0,t(1900).Z)({},r,[],!1,null,"13e4a356",null);u.options.__file="src/pages/2/BusinessRecord/index.vue";const n=u.exports}}]);

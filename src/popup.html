@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>부평 홍보물 인쇄팝업</title>
+  <style>
+    *{
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    a {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+  <a target="_blank" href="" style="overflow: hidden;">
+    <img id="img" alt="부평 홍보물" style="width: 100%;">
+  </a>
+  
+  <script>
+    function init () {
+      let path = window.location.href?.split('?')[1];
+      if (!path) return window.close();
+      let params = path.indexOf('&') > -1 ? path.split('&') : path;
+      let data = {};
+      params.forEach(item => {
+        let [key, value] = item?.split('=');
+        data[key] = value;
+      });
+      if (Object.keys(data)?.length === 0) return window.close();
+      document.querySelector('img').setAttribute('src', data?.img);
+      document.querySelector('a').setAttribute('href', data?.url);
+    }
+    init();
+  </script>
+</body>
+</html>
