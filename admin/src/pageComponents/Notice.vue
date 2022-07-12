@@ -5,21 +5,31 @@
         <thead>
           <tr>
             <th>
-              <input type="checkbox" id="notice-all-check" @click="noticeAllCheck" />
+              <input
+                type="checkbox"
+                id="notice-all-check"
+                @click="noticeAllCheck"
+              />
               <label for="notice-all-check" />
             </th>
-            <th v-for="title in titleList" :key="title" v-text="title"/>
+            <th v-for="title in titleList" :key="title" v-text="title" />
           </tr>
         </thead>
         <tbody>
-          <noticeList v-for="(item, idx) in noticeList" 
-            :key="idx" :item="item" :idx="idx" :noticeList="noticeList"
+          <noticeList
+            v-for="(item, idx) in noticeList"
+            :key="idx"
+            :item="item"
+            :idx="idx"
+            :noticeList="noticeList"
             @setSelectCount="setSelectCount"
             @setModalType="setModalType"
             @setSelectNoticeSeq="setSelectNoticeSeq"
             @setAddNoticeModalYN="setAddNoticeModalYN"
           />
-          <tr v-if="noticeList.length == 0"><td colspan="6">리스트가 없습니다.</td></tr>
+          <tr v-if="noticeList.length == 0">
+            <td colspan="6">리스트가 없습니다.</td>
+          </tr>
         </tbody>
       </table>
     </section>
@@ -31,14 +41,12 @@
         <span>선택 수 : {{ selectCount }}</span>
       </div>
       <div class="right">
-        <span class="total-count">
-          총 리스트 수 : {{ listCount }}
-        </span>
+        <span class="total-count"> 총 리스트 수 : {{ listCount }} </span>
       </div>
     </footer>
 
-    <addNoticeModal 
-      v-if="addNoticeModalYN" 
+    <addNoticeModal
+      v-if="addNoticeModalYN"
       :modalType="modalType"
       :selectNoticeSeq="selectNoticeSeq"
       @getList="getList"
@@ -51,19 +59,19 @@
       @getList="getList"
       @notice-category-modal-close="noticeCategoryModalClose"
     />
-
   </section>
 </template>
 
 <script>
-import { useAlert, useForm } from '../hook';
-import axios from 'axios';
+import { useAlert, useForm, useAxios } from "../hook";
+import axios from "axios";
 
 export default {
   components: {
-    addNoticeModal: () => import('../pageSubComponents/Notice/addNoticeModal'),
-    noticeCategoryModal: () => import('../pageSubComponents/Notice/noticeCategoryModal'),
-    noticeList: () => import('../pageSubComponents/Notice/noticeList')
+    addNoticeModal: () => import("../pageSubComponents/Notice/addNoticeModal"),
+    noticeCategoryModal: () =>
+      import("../pageSubComponents/Notice/noticeCategoryModal"),
+    noticeList: () => import("../pageSubComponents/Notice/noticeList"),
   },
   props: {
     sendData: Object,
@@ -72,48 +80,57 @@ export default {
   },
   data() {
     return {
-      titleList: ['N o', '카테고리', '제 목', '작 성 자', '작 성 일'],
-      modalType: 'C',
-      selectNoticeSeq: '',
+      titleList: ["N o", "카테고리", "제 목", "작 성 자", "작 성 일"],
+      modalType: "C",
+      selectNoticeSeq: "",
       listCount: 0,
       selectCount: 0,
       noticeList: [],
       addNoticeModalYN: false,
       noticeCategoryModalYN: false,
-    }
+    };
   },
   created() {
     this.getList();
   },
   methods: {
-    setModalType(val) {this.modalType = val},
-    setSelectNoticeSeq(val) {this.selectNoticeSeq = val},
-    setAddNoticeModalYN(val) {this.addNoticeModalYN = val},
-    setSelectCount(val) {this.selectCount = val},
+    setModalType(val) {
+      this.modalType = val;
+    },
+    setSelectNoticeSeq(val) {
+      this.selectNoticeSeq = val;
+    },
+    setAddNoticeModalYN(val) {
+      this.addNoticeModalYN = val;
+    },
+    setSelectCount(val) {
+      this.selectCount = val;
+    },
     getList() {
-      let data = {TASK: 'R_NTC_LIST'}
-      
-      axios.post(this.$store.state.dbUrl + '/MNGR_NTC', useForm(data)).then(({data}) => {
-        if (!data.RESULT && data?.CAUSE == 'SESSIONFAIL') return this.$store.dispatch('sessionFail');
+      useAxios.get("/admin/ntc").then(({ data }) => {
+        if (!data?.RESULT) return (this.noticeList = []);
         this.noticeList = data.NTC_LIST;
-        this.listCount = this.noticeList.length;
-        
-        let els = document.querySelectorAll('#notice-all-check, [id^=noticeChk_');
-        els.forEach(el => el.checked = false);
-        this.selectCount = 0;
-        // let els_chk = document.querySelector('#notice-all-check');
-        // els_chk.checked = false;
-      });
+        this.listCount = data?.NTC_LIST?.length;
 
+        let els = document.querySelectorAll(
+          "#notice-all-check, [id^=noticeChk_"
+        );
+        els.forEach((el) => (el.checked = false));
+        this.selectCount = 0;
+      });
     },
     noticeAllCheck(e) {
       let bool = e.target.checked;
-      document.querySelectorAll('[id^="noticeChk_"]').forEach(el => el.checked = (bool ? true : false));
-      this.selectCount = document.querySelectorAll('[id^="noticeChk_"]:checked').length;
+      document
+        .querySelectorAll('[id^="noticeChk_"]')
+        .forEach((el) => (el.checked = bool ? true : false));
+      this.selectCount = document.querySelectorAll(
+        '[id^="noticeChk_"]:checked'
+      ).length;
     },
     addNoticeModalOpen(e) {
-      this.modalType = 'C';
-      this.selectNoticeSeq = '';
+      this.modalType = "C";
+      this.selectNoticeSeq = "";
       this.addNoticeModalYN = true;
     },
     addNoticeModalClose(e) {
@@ -128,30 +145,30 @@ export default {
       this.modalInDarkDivClose();
     },
     selectedDel(e) {
-      let els = document.querySelectorAll('[id^=noticeChk_]:checked');
+      let els = document.querySelectorAll("[id^=noticeChk_]:checked");
 
-      els.forEach(el => {
-        let seq = Number(el.id.split('_')[1]);
-        let data = {TASK: 'D_NTC', NTC_SN: seq}
-        
-        axios.post(this.$store.state.dbUrl + '/MNGR_NTC', useForm(data)).then(({data}) => {
-          if (!data.RESULT && data?.CAUSE == 'SESSIONFAIL') return this.$store.dispatch('sessionFail');
-          // console.log(data);
-          if (!data.RESULT) {
-            useAlert.error('공지사항', '공지사항을 삭제 실패하였습니다.');
-            return;
-          }
-          useAlert.success('공지사항', '선택한 항목이 삭제되었습니다.');
-          this.getList();
-        }).catch(() => {
-          useAlert.error('공지사항', '공지사항을 삭제 실패하였습니다.');
-        });
-
+      els.forEach((el) => {
+        let seq = Number(el.id.split("_")[1]);
+        useAxios
+          .delete("/admin/ntc/" + seq)
+          .then(({ data }) => {
+            if (!data.RESULT && data?.CAUSE == "SESSIONFAIL")
+              return this.$store.dispatch("sessionFail");
+            // console.log(data);
+            if (!data.RESULT) {
+              useAlert.error("공지사항", "공지사항을 삭제 실패하였습니다.");
+              return;
+            }
+            useAlert.success("공지사항", "선택한 항목이 삭제되었습니다.");
+            this.getList();
+          })
+          .catch(() => {
+            useAlert.error("공지사항", "공지사항을 삭제 실패하였습니다.");
+          });
       });
-      
     },
-  }
-}
+  },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -172,12 +189,24 @@ export default {
         background-color: #eee;
         font-weight: 500;
         position: relative;
-        &:nth-of-type(1) {width: 50px;}
-        &:nth-of-type(2) {width: 70px;}
-        &:nth-of-type(3) {width: 150px;}
-        &:nth-of-type(4) {width: auto;}
-        &:nth-of-type(5) {width: 14%;}
-        &:nth-of-type(6) {width: 14%;}
+        &:nth-of-type(1) {
+          width: 50px;
+        }
+        &:nth-of-type(2) {
+          width: 70px;
+        }
+        &:nth-of-type(3) {
+          width: 150px;
+        }
+        &:nth-of-type(4) {
+          width: auto;
+        }
+        &:nth-of-type(5) {
+          width: 14%;
+        }
+        &:nth-of-type(6) {
+          width: 14%;
+        }
         label {
           position: absolute;
           top: 0;

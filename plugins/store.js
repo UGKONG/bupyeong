@@ -33,15 +33,23 @@ const store = new Vuex.Store({
     setMenuList: (state, payload) => state.menuList = payload,
     setSideMenu: (state, payload) => state.isSideMenu = payload,
     setLoginYN: (state, payload) => state.loginYN = payload,
+    setLoginInfo: (state, payload) => state.loginInfo = payload,
     setScrollTop: (state, payload) => state.scrollTop = payload,
     setIsStudent: (state, payload) => state.loginInfo = { ...state.loginInfo, isStudent: payload },
+    logout: (state) => {
+      window.sessionStorage.removeItem('loginInfo');
+      state.loginInfo = null;
+      state.loginYN = false;
+    }
   },
   actions: {
     setMenuList: ({ commit }, payload) => commit('setMenuList', payload),
     setSideMenu: ({ commit }, payload) => commit('setSideMenu', payload),
     setLoginYN: ({ commit }, payload) => commit('setLoginYN', payload),
+    setLoginInfo: ({ commit }, payload) => commit('setLoginInfo', payload),
     setScrollTop: ({commit}, payload) => commit('setScrollTop', payload),
     setIsStudent: ({commit}, payload) => commit('setIsStudent', payload),
+    logout: ({commit}) => commit('logout'),
   }
 });
 

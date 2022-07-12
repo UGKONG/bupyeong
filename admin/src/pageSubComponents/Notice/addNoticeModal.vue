@@ -3,7 +3,10 @@
     <header>
       <article>
         <h1>
-          <div class="icon" :style="{ backgroundImage: 'url(' + editIcon + ')' }" />
+          <div
+            class="icon"
+            :style="{ backgroundImage: 'url(' + editIcon + ')' }"
+          />
           <span>공지사항 {{ returnModalType }}</span>
         </h1>
       </article>
@@ -20,18 +23,32 @@
       <div class="c-top">
         <div class="top-left">
           <p>
-            <input type="checkbox" id="noticeTopFixedChk" v-model="addNoticeData.TOP_FIX_YN" hidden />
+            <input
+              type="checkbox"
+              id="noticeTopFixedChk"
+              v-model="addNoticeData.TOPFIX_YN"
+              hidden
+            />
             <label for="noticeTopFixedChk" v-text="'상단에 공지 고정'" />
             <label for="noticeTopFixedChk" switch><span /></label>
           </p>
-          <p v-if="addNoticeData.TOP_FIX_YN" class="s">
+          <p v-if="addNoticeData.TOPFIX_YN" class="s">
             <label for="noticeTopFixedDate" v-text="'고정 기간 : '" />
-            <input type="date" id="noticeTopFixedDate" v-model="addNoticeData.TOP_FIX_DT" />
+            <input
+              type="date"
+              id="noticeTopFixedDate"
+              v-model="addNoticeData.TOPFIX_LDAY"
+            />
             <small>까지</small>
           </p>
         </div>
         <div class="top-right">
-          <input type="checkbox" id="commentsYN" v-model="addNoticeData.CMNT_YN" hidden />
+          <input
+            type="checkbox"
+            id="commentsYN"
+            v-model="addNoticeData.CMNT_YN"
+            hidden
+          />
           <label for="commentsYN" v-text="'댓글작성 가능'" />
           <label for="commentsYN" switch><span /></label>
         </div>
@@ -40,27 +57,42 @@
         <p class="title">
           <span>
             <label class="required" for="noticeTitle" v-text="'제 목 : '" />
-            <input id="noticeTitle" v-model="addNoticeData.NTC_TITLE" ref="titleRef" />
+            <input
+              id="noticeTitle"
+              v-model="addNoticeData.NTC_TITLE"
+              ref="titleRef"
+            />
           </span>
           <span>
             <label for="noticeCategory" v-text="'카테고리 : '" />
             <select id="noticeCategory" v-model="addNoticeData.NTC_CTGR_SN">
-              <option 
-                v-for="item in noticeCategoryList" 
-                :key="item.NTC_CTGR_SN" 
-                :value="item.NTC_CTGR_SN" 
+              <option
+                v-for="item in noticeCategoryList"
+                :key="item.NTC_CTGR_SN"
+                :value="item.NTC_CTGR_SN"
                 v-text="item.NTC_CTGR_NM"
               />
             </select>
           </span>
         </p>
-        <label class="contents required" for="noticeContents" v-text="'내 용'" />
-        <textarea id="noticeContents" v-model="addNoticeData.NTC_CN" ref="contentsRef" />
-        <uploadFiles :fileList="addNoticeFileList" @setFileList="setNoticeFileList" :url="'/MNGR_NTC'" :prop="'D_NTC_FILE'" />
+        <label
+          class="contents required"
+          for="noticeContents"
+          v-text="'내 용'"
+        />
+        <textarea
+          id="noticeContents"
+          v-model="addNoticeData.NTC_CN"
+          ref="contentsRef"
+        />
+        <uploadFiles
+          :fileList="addNoticeFileList"
+          @setFileList="setNoticeFileList"
+          :url="'/ntc'"
+          :prop="'D_NTC_FILE'"
+        />
         <div class="info">
-          <span>
-            작성자 : {{ addNoticeData.WRTR_NM }}
-          </span>
+          <span> 작성자 : {{ addNoticeData.WRTR_NM }} </span>
         </div>
       </div>
     </article>
@@ -68,123 +100,142 @@
 </template>
 
 <script>
-import editIcon from '../../img/icon/edit.png';
-import { useAlert, useForm } from '../../hook';
-import axios from 'axios';
+import editIcon from "../../img/icon/edit.png";
+import { useAlert, useForm, useAxios } from "../../hook";
 
 export default {
   components: {
-    uploadFiles: () => import('../common/uploadFiles.vue'),
-    Checkbox: () => import('../../htmlTemplate/Checkbox.vue'),
+    uploadFiles: () => import("../common/uploadFiles.vue"),
+    Checkbox: () => import("../../htmlTemplate/Checkbox.vue"),
   },
-  props: [
-    'modalType',
-    'selectNoticeSeq',
-  ],
+  props: ["modalType", "selectNoticeSeq"],
   data() {
     return {
       editIcon,
       noticeCategoryList: [],
       addNoticeData: {},
       addNoticeFileList: [],
-    }
+    };
   },
   created() {
     this.getCategoryList();
   },
   methods: {
     getCategoryList() {
-      let data = {TASK: 'R_NTC_CTGR_LIST'};
-      axios.post(this.$store.state.dbUrl + '/MNGR_NTC', useForm(data)).then(({data}) => {
-        if (!data.RESULT && data?.CAUSE == 'SESSIONFAIL') return this.$store.dispatch('sessionFail');
-        this.noticeCategoryList = data.NTC_CTGR_LIST;
-        this.editData = [...data.NTC_CTGR_LIST];
+      // useAxios.get("/admin/ntc_ctgr").then(({ data }) => {
+      // console.log(data);
+      // if (!data.RESULT && data?.CAUSE == "SESSIONFAIL")
+      // return this.$store.dispatch("sessionFail");
+      // this.noticeCategoryList = data.NTC_CTGR_LIST;
+      // this.editData = [...data.NTC_CTGR_LIST];
 
-        if (this.modalType == 'C') {
-          this.addNoticeData = {
-            NTC_SN: 0,
-            NTC_CTGR_SN: 0,
-            NTC_TITLE: '',
-            CMNT_YN: true,
-            TOP_FIX_YN: false,
-            TOP_FIX_DT: '',
-            NTC_CN: ''
-          }
-          this.addNoticeData.NTC_CTGR_SN = this.noticeCategoryList[0].NTC_CTGR_SN;
-          return;
-        }
-        this.getDetailData();
-      });
+      if (this.modalType == "C") {
+        this.addNoticeData = {
+          ATCHFILE_LIST: [],
+          CMNT_YN: false,
+          NTC_CN: "",
+          NTC_CTGR_SN: "",
+          NTC_TITLE: "",
+          POI_SN: null,
+          TOPFIX_LDAY: "",
+          TOPFIX_YN: "N",
+          WRTR_NM: this.$store?.loginInfo?.MBR_NM,
+          WRTR_SN: this.$store?.loginInfo?.WRTR_SN,
+        };
+        this.addNoticeData.NTC_CTGR_SN = this.noticeCategoryList[0].NTC_CTGR_SN;
+        return;
+      }
+      this.getDetailData();
+      // });
     },
     getDetailData() {
-      let data = {TASK: 'R_NTC_DTL', NTC_SN: this.selectNoticeSeq};
-      axios.post(this.$store.state.dbUrl + '/MNGR_NTC', useForm(data)).then(({data}) => {
-        if (!data.RESULT && data?.CAUSE == 'SESSIONFAIL') return this.$store.dispatch('sessionFail');
-        data.TOP_FIX_DT = data.TOP_FIX_DT.split(' ')[0];
-        this.addNoticeData = data;
-        this.addNoticeFileList = data.ATCH_FILE_LIST;
-        delete data.ATCH_FILE_LIST;
+      useAxios.get("/admin/ntc/" + this.selectNoticeSeq).then(({ data }) => {
+        console.log(data);
+        if (!data.RESULT && data?.CAUSE == "SESSIONFAIL")
+          return this.$store.dispatch("sessionFail");
+        if (data.TOPFIX_LDAY !== "")
+          data.TOPFIX_LDAY = data.TOPFIX_LDAY.split(" ")[0];
+        this.addNoticeData = {
+          ...data,
+          CMNT_YN: data?.CMNT_YN == "Y",
+          TOPFIX_YN: data?.TOPFIX_YN == "Y",
+        };
+        this.addNoticeFileList = data?.ATCHFILE_LIST ?? [];
       });
     },
 
     noticeSave() {
       let titleValue = this.$refs.titleRef.value;
       let contentsValue = this.$refs.contentsRef.value;
-      if (titleValue == '' || contentsValue == '') {
-        return useAlert.warn('공지사항 작성', '제목 또는 내용을 입력해주세요.');
+      if (titleValue == "" || contentsValue == "") {
+        return useAlert.warn("공지사항 작성", "제목 또는 내용을 입력해주세요.");
       }
-      if (this.addNoticeData.TOP_FIX_YN == true && this.addNoticeData.TOP_FIX_DT == '') {
-        return useAlert.warn('공지사항 작성', '고정 기간을 입력해주세요.');
+      if (
+        this.addNoticeData.TOPFIX_YN == true &&
+        this.addNoticeData.TOPFIX_LDAY == ""
+      ) {
+        return useAlert.warn("공지사항 작성", "고정 기간을 입력해주세요.");
       }
 
-      this.addNoticeData.TOP_FIX_YN = this.addNoticeData.TOP_FIX_YN ? 1 : 0;
-      this.addNoticeData.CMNT_YN = this.addNoticeData.CMNT_YN ? 1 : 0;
-      
-      this.addNoticeData.TASK = 'C_NTC_DTL';
+      this.addNoticeData.TOPFIX_YN = this.addNoticeData.TOPFIX_YN ? "Y" : "N";
+      this.addNoticeData.CMNT_YN = this.addNoticeData.CMNT_YN ? "Y" : "N";
+
+      this.addNoticeData.TASK = "C_NTC_DTL";
       let data = this.addNoticeData;
-      let files = {'ATCH_FILE_LIST': this.addNoticeFileList};
-      axios.post(this.$store.state.dbUrl + '/MNGR_NTC', useForm(data, files)).then(({data}) => {
-        if (!data.RESULT && data?.CAUSE == 'SESSIONFAIL') return this.$store.dispatch('sessionFail');
-        console.log(data);
-        if (!data.RESULT) return useAlert.error('공지사항 등록', '공지가 등록실패였습니다.');
-        
-        this.$emit('getList');
-        this.$emit('add-notice-modal-close');
-        useAlert.success('공지사항 등록', '공지가 등록되었습니다.');
-      }).catch(() => {
-        useAlert.error('공지사항 등록', '공지가 등록실패였습니다.');
-      });
+      data = { ...data, NTC_CTGR_SN: this.addNoticeData?.NTC_CTGR_SN || 1 };
+      data = { ...data, POI_SN: this.addNoticeData?.POI_SN || 1 };
+      let files = { ATCHFILE_LIST: this.addNoticeFileList };
+      console.log(files);
+
+      useAxios
+        .post(
+          "/admin/ntc" +
+            (this.modalType == "C" ? "" : "/" + this.selectNoticeSeq),
+          useForm(data, files)
+        )
+        .then(({ data }) => {
+          if (!data.RESULT && data?.CAUSE == "SESSIONFAIL")
+            return this.$store.dispatch("sessionFail");
+          console.log(data);
+          if (!data.RESULT)
+            return useAlert.error("공지사항 저장", "공지가 저장실패였습니다.");
+
+          this.$emit("getList");
+          this.$emit("add-notice-modal-close");
+          useAlert.success("공지사항 저장", "공지가 저장되었습니다.");
+        })
+        .catch(() => {
+          useAlert.error("공지사항 저장", "공지가 저장실패였습니다.");
+        });
     },
     setNoticeFileList(value) {
       this.addNoticeFileList = value;
-    }
+    },
   },
   computed: {
     returnModalType() {
-      let result = 
-        this.modalType == 'C' ? '작성' : 
-        this.modalType == 'U' ? '수정' : '';
+      let result =
+        this.modalType == "C" ? "작성" : this.modalType == "U" ? "수정" : "";
       return result;
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
-
 [switch] {
   width: 50px;
   height: 28px;
   margin-left: 10px;
   display: inline-block;
   border: 1px solid #eee;
-  background-color: #ddd;;
+  background-color: #ddd;
   padding: 2px;
   border-radius: 100px;
   transform: translateY(2px);
   overflow: hidden;
   cursor: pointer;
-  transition: .3s;
+  transition: 0.3s;
   position: relative;
   span {
     position: absolute;
@@ -195,12 +246,12 @@ export default {
     background-color: #fff;
     display: block;
     border-radius: 100px;
-    transition: .3s;
+    transition: 0.3s;
   }
 }
 input:checked ~ [switch] {
   background-color: #4bc64b;
-  &  > span {
+  & > span {
     left: 20px;
   }
 }
@@ -255,7 +306,6 @@ section.sModal {
         border: 1px solid #ccc;
         margin-right: 4px;
       }
-
     }
   }
 
@@ -270,8 +320,12 @@ section.sModal {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        & > span:nth-of-type(1) {width: 70%;}
-        & > span:nth-of-type(2) {width: auto;}
+        & > span:nth-of-type(1) {
+          width: 70%;
+        }
+        & > span:nth-of-type(2) {
+          width: auto;
+        }
         input {
           padding: 0 5px;
           width: calc(100% - 80px);
@@ -312,6 +366,5 @@ section.sModal {
       }
     }
   }
-
 }
 </style>

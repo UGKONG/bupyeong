@@ -18,22 +18,8 @@
     </h2>
     <section>
       <form @submit.prevent="submit">
-        <input
-          type="text"
-          id="id"
-          :value="id"
-          @change="(e) => (id = e.target.value)"
-          placeholder="아이디"
-          required
-        />
-        <input
-          type="password"
-          id="pw"
-          :value="pw"
-          @change="(e) => (pw = e.target.value)"
-          placeholder="비밀번호"
-          required
-        />
+        <input type="text" v-model="id" placeholder="아이디" required />
+        <input type="password" v-model="pw" placeholder="비밀번호" required />
         <button id="submit">로그인</button>
         <div sns>
           <button
@@ -95,27 +81,42 @@ export default {
               let platform = "kakao";
 
               // snsLoginSubmit({ authId, email, name, platform, img });
-              console.log({ authId, email, name, platform, img });
+              this.snsSubmiy(authId, platform);
             },
           });
         },
       });
     },
-    testLogin() {
-      this.$store.dispatch("setLoginYN", true);
-      useAlert.success("로그인", "로그인되었습니다.");
-      this.$router.go(-1);
+    snsSubmiy(authId, platform) {
+      let form = new FormData();
+      form.append("SNS_ID", authId);
+      form.append("SNS_TYPE", platform);
+      useAxios.post("/snslogin", form).then(({ data }) => {
+        if (!data?.RESULT) return useAlert.warn("알림", data?.RESULT_DESC);
+        this.submitSuccess(data);
+      });
     },
     submit() {
-      useAxios
-        .post("/login", {
-          ID: id,
-          PWD: pw,
-        })
-        .then(({ data }) => {
-          console.log(data);
-        });
+      let form = new FormData();
+      form.append("ID", this.id);
+      form.append("PWD", this.pw);
+      useAxios.post("/login", form).then(({ data }) => {
+        if (!data?.RESULT) return useAlert.warn("알림", data?.RESULT_DESC);
+        this.submitSuccess(data);
+      });
     },
+    submitSuccess(data) {
+      window.sessionStorage.setItem("loginInfo", JSON.stringify(data));
+      this.$store.dispatch("setLoginYN", true);
+      this.$store.dispatch("setLoginInfo", data);
+      useAlert.info("로그인", data?.MBR_NM + "님 환영합니다.");
+      this.$router.push("/");
+    },
+    // testLogin() {
+    //   this.$store.dispatch("setLoginYN", true);
+    //   useAlert.success("로그인", "로그인되었습니다.");
+    //   this.$router.go(-1);
+    // },
   },
   computed: {
     loginYN() {

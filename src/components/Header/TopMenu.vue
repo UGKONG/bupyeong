@@ -6,7 +6,7 @@
       </button>
       <ul left></ul>
       <ul right>
-        <TopMenuLi :item="login[loginState]" />
+        <TopMenuLi :item="loginState" />
         <!-- <router-link v-if="loginYN" :to="login.url" v-text="login.name" /> -->
         <TopMenuLi v-for="(item, idx) in menu.right" :key="idx" :item="item" />
       </ul>
@@ -50,7 +50,9 @@ export default {
       return this.$store.state.loginYN;
     },
     loginState() {
-      return this.loginYN ? "Y" : "N";
+      return this.loginYN
+        ? { name: "로그아웃", url: "/SignIn", target: "self" }
+        : { name: "로그인", url: "/SignIn", target: "self" };
     },
   },
 };

@@ -41,6 +41,7 @@ export default {
       this.historyChk(val);
       window.scrollTo(0, 0);
       this.scrollTop = 0;
+      this.loginCheck();
     },
     scrollTop(val) {
       this.$store.dispatch("setScrollTop", val);
@@ -52,8 +53,17 @@ export default {
     window.addEventListener("scroll", (e) => {
       this.scrollTop = window.scrollY;
     });
+    this.loginCheck();
   },
   methods: {
+    loginCheck() {
+      let loginInfo = window.sessionStorage.getItem("loginInfo");
+      this.$store.dispatch("setLoginYN", loginInfo ? true : false);
+      this.$store.dispatch(
+        "setLoginInfo",
+        loginInfo ? JSON.parse(loginInfo) : null
+      );
+    },
     getMenuList() {
       axios
         .get(this.$store.state.dbUrl + "/menuList?type=header")

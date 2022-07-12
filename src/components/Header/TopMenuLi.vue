@@ -28,6 +28,8 @@ export default {
       let name = this.item.name;
       if (name == "로그아웃") {
         this.$store.dispatch("setLoginYN", false);
+        this.$store.dispatch("setLoginInfo", null);
+        this.$store.dispatch("logout");
         useAlert.info("로그아웃", "로그아웃되었습니다.");
         this.$router.push("/");
       }

@@ -12,26 +12,33 @@
       </thead>
       <tbody>
         <tr v-for="(file, idx) in fileList" :key="idx">
-          <td v-text="idx + 1" />
-          <td v-text="file.name || file.FN" />
-          <td v-text="file.type || file.FILE_TYPE" />
+          <td v-text="idx + 1" @click="() => fileDownload(file.ATCHFILE_URL)" />
+          <td
+            v-text="file.name || file.ATCHFILE_NM"
+            @click="() => fileDownload(file.ATCHFILE_URL)"
+          />
+          <td
+            v-text="file.type || file.FILE_TYPE"
+            @click="() => fileDownload(file.ATCHFILE_URL)"
+          />
           <td
             v-text="
               file.size
                 ? useFileSize(file.size) == '0.00'
                   ? '0'
                   : useFileSize(file.size)
-                : useFileSize(file.FILE_SZ) == '0.00'
+                : useFileSize(file.FILE_SIZE) == '0.00'
                 ? '0'
-                : useFileSize(file.FILE_SZ)
+                : useFileSize(file.FILE_SIZE)
             "
+            @click="() => fileDownload(file.ATCHFILE_URL)"
           />
           <td>
             <button
               class="v-delBtn"
               :data-index="idx"
               @click="delFile"
-              :data-seq="file.ATCH_FILE_SN"
+              :data-seq="file.ATCHFILE_SN"
             >
               <i class="fas fa-minus" />
             </button>
@@ -84,6 +91,15 @@ export default {
     };
   },
   methods: {
+    fileDownload(url, name) {
+      window.open(url);
+      return;
+      let a = window.document.createElement("a");
+      a.setAttribute("blank", "new");
+      a.setAttribute("herf", url);
+      a.click();
+      a.remove();
+    },
     uploadFile(e) {
       if (e.target.files.length == 0) return;
       let fileObj = e.target.files[0];
@@ -123,7 +139,7 @@ export default {
             return;
           }
 
-          let data = { TASK: this.prop, ATCH_FILE_SN: seq };
+          let data = { TASK: this.prop, ATCHFILE_SN: seq };
           axios
             .post(this.$store.state.dbUrl + this.url, useForm(data))
             .then(({ data }) => {
