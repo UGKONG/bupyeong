@@ -11,166 +11,188 @@
       <DarkDiv v-show="darkdivYN" />
     </transition>
 
-  <template v-if="loginYN">
+    <template v-if="loginYN">
+      <!-- Background Icon -->
+      <article
+        v-for="item in iconList_bg"
+        :key="item.ICON_SN"
+        :class="item.ICON_NM"
+        :data-title="item.ICON_NM"
+        :data-type="item.ICON_TYPE"
+        :data-component-name="item.CMPNT"
+        data-who="bgIcon"
+        @dblclick="bgIconDbClick"
+      >
+        <div :style="{ backgroundImage: 'url(' + folderIcon + ')' }" />
+        <p>{{ item.ICON_NM }}</p>
+      </article>
 
-    <!-- Background Icon -->
-    <article 
-      v-for="item in iconList_bg"
-      :key="item.MENU_SN" 
-      :class="item.MENU_NM" 
-      :data-title="item.MENU_NM"
-      :data-type="item.TYPE"
-      :data-component-name="item.CPNT_NM"
-      data-who="bgIcon"
-      @dblclick="bgIconDbClick"
-    >
-      <div :style="{ backgroundImage: 'url(' + folderIcon + ')' }" />
-      <p>{{ item.MENU_NM }}</p>
-    </article>
+      <!-- Background Icon (Dashboard, Setting) -->
+      <article
+        v-for="item in defaultIconList"
+        style="float: right"
+        data-who="bgIcon"
+        :key="'bg' + item.ICON_SN"
+        :class="item.ICON_NM"
+        :data-seq="item.ICON_SN"
+        :data-title="item.ICON_NM"
+        :data-type="item.TYPE"
+        :data-component-name="item.CMPNT"
+        @dblclick="bgIconDbClick"
+      >
+        <div
+          :style="{
+            backgroundImage:
+              'url(' +
+              (item.CMPNT == 'Dashboard' ? dashboardIcon : settingIcon) +
+              ')',
+          }"
+        />
+        <p>{{ item.ICON_NM }}</p>
+      </article>
 
-    <!-- Background Icon (Dashboard, Setting) -->
-    <article 
-      v-for="item in defaultIconList" 
-      style="float: right"
-      data-who="bgIcon"
-      :key="'bg' + item.MENU_SN" 
-      :class="item.MENU_NM" 
-      :data-seq="item.MENU_SN"
-      :data-title="item.MENU_NM"
-      :data-type="item.TYPE"
-      :data-component-name="item.CPNT_NM"
-      @dblclick="bgIconDbClick"
-    >
-      <div :style="{ backgroundImage: 'url(' + (item.CPNT_NM == 'Dashboard' ? dashboardIcon : settingIcon) + ')' }" />
-      <p>{{ item.MENU_NM }}</p>
-    </article>
+      <!-- Finder -->
+      <transition name="slide-y-reverse-transition">
+        <Finder
+          v-for="item in finderCount"
+          :class="item"
+          :titleName="item"
+          :key="item"
+          :darkdivYN="darkdivYN"
+          :modalYN="modalYN"
+          :modalSeq="modalSeq"
+          :setModalSeq="setModalSeq"
+          :modalTitle="modalTitle"
+          :modalSubTitle="modalSubTitle"
+          :setSubTitle="setSubTitle"
+          :modalOpen="modalOpen"
+          :modalClose="modalClose"
+          :componentName="componentName"
+          :setComponentName="setComponentName"
+        />
+      </transition>
 
-    <!-- Finder -->
-    <transition name="slide-y-reverse-transition">
-      <Finder 
-        v-for="item in finderCount" 
-        :class="item" 
-        :titleName="item" 
-        :key="item"
-        :darkdivYN="darkdivYN"
-        :modalYN="modalYN"
-        :modalSeq="modalSeq"
-        :setModalSeq="setModalSeq"
-        :modalTitle="modalTitle"
-        :modalSubTitle="modalSubTitle"
-        :setSubTitle="setSubTitle"
-        :modalOpen="modalOpen"
-        :modalClose="modalClose"
-        :componentName="componentName"
-        :setComponentName="setComponentName"
-      />
-    </transition>
+      <!-- Modal -->
+      <transition name="slide-y-reverse-transition">
+        <Modal
+          v-if="modalYN"
+          :modalTitle="modalTitle"
+          :componentName="componentName"
+          :modalSeq="modalSeq"
+          @modalClose="modalClose"
+        />
+      </transition>
 
-    <!-- Modal -->
-    <transition name="slide-y-reverse-transition">
-      <Modal 
-        v-if="modalYN"
-        :modalTitle="modalTitle"
-        :componentName="componentName"
-        :modalSeq="modalSeq"
-        @modalClose="modalClose"
-      />
-    </transition>
+      <!-- 접속정보 -->
+      <p
+        class="inInfo"
+        :style="{
+          position: 'absolute',
+          bottom: '5px',
+          left: '5px',
+          color: '#fff',
+        }"
+      >
+        <span>접속일시 : {{ inTime }}</span
+        ><br />
+        <span>접속정보 : {{ inInfo }}</span>
+      </p>
 
-    <!-- 접속정보 -->
-    <p class="inInfo" :style="{
-      position: 'absolute',
-      bottom: '5px',
-      left: '5px',
-      color: '#fff'
-    }">
-      <span>접속일시 : {{ inTime }}</span><br />
-      <span>접속정보 : {{ inInfo }}</span>
-    </p>
+      <!-- Progress -->
+      <v-progress v-if="isProgress" :percent="progressPercent" />
 
-    <button id="logoutBtn" @click="logout">
-      로그아웃
-    </button>
-  </template>
+      <button id="logoutBtn" @click="logout">로그아웃</button>
+    </template>
 
     <!-- Login Page -->
     <transition name="fade-transition">
       <Login v-if="!loginYN" />
     </transition>
-
   </main>
 </template>
 
 <script>
-import { Store } from './store';
-import axios from 'axios';
-import { useDateFormat, useTimeFormat, useForm, useAlert } from './hook';
-import Bg from './img/bg.png';
-import dashboardIcon from './img/icon/dashboard.png';
-import settingIcon from './img/icon/setting.png';
-import folderIcon from './img/icon/folder.png';
+import { Store } from "./store";
+import axios from "axios";
+import { useDateFormat, useTimeFormat, useForm, useAlert } from "./hook";
+import Bg from "./img/bg.png";
+import dashboardIcon from "./img/icon/dashboard.png";
+import settingIcon from "./img/icon/setting.png";
+import folderIcon from "./img/icon/folder.png";
+import progress from "./pageSubComponents/common/progress.vue";
 
 export default {
   components: {
-    DarkDiv: () => import('./darkdiv'),
-    Finder: () => import('./finder'),
-    Modal: () => import('./modal'),
-    Confirm: () => import('./v-confirm'),
-    Login: () => import('./login')
+    DarkDiv: () => import("./darkdiv"),
+    Finder: () => import("./finder"),
+    Modal: () => import("./modal"),
+    Confirm: () => import("./v-confirm"),
+    Login: () => import("./login"),
+    "v-progress": progress,
   },
-  data () {
+  data() {
     return {
-      inTime: '',
-      inInfo: '',
+      inTime: "",
+      inInfo: "",
       bg: Bg,
       dashboardIcon: dashboardIcon,
       settingIcon: settingIcon,
       folderIcon: folderIcon,
       darkdivYN: false,
       modalYN: false,
-      modalTitle: '',
-      modalSubTitle: '',
-      componentName: '',
-      modalSeq: '',
-    }
+      modalTitle: "",
+      modalSubTitle: "",
+      componentName: "",
+      modalSeq: "",
+    };
   },
   created() {
-    this.inTime = useDateFormat() + ' ' + useTimeFormat();
-    this.inInfo = window.navigator.appVersion + ' ' + window.navigator.appCodeName;
+    this.inTime = useDateFormat() + " " + useTimeFormat();
+    this.inInfo =
+      window.navigator.appVersion + " " + window.navigator.appCodeName;
   },
   methods: {
     logout() {
-      let data = {TASK: 'D_LOGOUT'}
-      axios.post(this.$store.state.dbUrl + '/LOGOUT', useForm(data)).then(
-        ({data}) => {
+      let data = { TASK: "D_LOGOUT" };
+      axios
+        .post(this.$store.state.dbUrl + "/LOGOUT", useForm(data))
+        .then(({ data }) => {
           console.log(data);
           if (data.RESULT) {
-            useAlert.info('로그아웃', '로그아웃되었습니다.');
-            this.$store.commit('setLoginYN', false);
+            useAlert.info("로그아웃", "로그아웃되었습니다.");
+            this.$store.commit("setLoginYN", false);
           }
-        }
-      )
+        });
     },
-    bgIconDbClick (e) {
+    bgIconDbClick(e) {
       let className = e.currentTarget.className;
-      let titleName = e.currentTarget.getAttribute('data-title');
-      let typeName = e.currentTarget.getAttribute('data-type');
-      if (typeName == 'folder') {  // 폴더O
+      let titleName = e.currentTarget.getAttribute("data-title");
+      let typeName = e.currentTarget.getAttribute("data-type");
+      if (typeName == "0") {
+        // 폴더O
         Store.finderCount = [];
-        if (Store.finderCount.indexOf(className) == -1 && (Store.finderCount ?? []).length < 1){
+        if (
+          Store.finderCount.indexOf(className) == -1 &&
+          (Store.finderCount ?? []).length < 1
+        ) {
           this.darkdivYN = false;
           this.modalYN = false;
           Store.finderCount.push(className);
-          Store.finderSeq = this.iconList_bg.find(x => x.MENU_NM == className).MENU_SN;
+          Store.finderSeq = this.iconList_bg.find(
+            (x) => x.ICON_NM == className
+          ).ICON_SN;
           Store.finderIn = false;
           return;
         }
-      } else {  // 폴더X
+      } else {
+        // 폴더X
         this.darkdivYN = true;
         this.modalYN = true;
         this.modalTitle = titleName;
-        this.componentName = e.currentTarget.getAttribute('data-component-name');
-        this.modalSeq = e.currentTarget.getAttribute('data-seq');
+        this.componentName = e.currentTarget.getAttribute(
+          "data-component-name"
+        );
+        this.modalSeq = e.currentTarget.getAttribute("data-seq");
       }
     },
     modalClose() {
@@ -190,7 +212,7 @@ export default {
     },
     setModalSeq(seq) {
       this.modalSeq = seq;
-    }
+    },
   },
   computed: {
     defaultIconList: () => Store.defaultIconList,
@@ -198,15 +220,21 @@ export default {
     iconList_bg: () => Store.iconList_bg,
     iconList_folder: () => Store.iconList_folder,
     iconList_inFolder: () => Store.iconList_inFolder,
-    loginYN: function() {
+    loginYN: function () {
       return this.$store.state.loginYN;
     },
-  }
-}
+    isProgress() {
+      return this.$store.state.isProgress;
+    },
+    progressPercent() {
+      return this.$store.state.progressPercent;
+    },
+  },
+};
 </script>
 
 <style lang="scss">
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap");
 
 html {
   overflow: hidden !important;
@@ -236,11 +264,24 @@ select {
   list-style: none;
   color: inherit;
   text-decoration: none;
-  font-family: 'Noto Sans KR', sans-serif;
+  font-family: "Noto Sans KR", sans-serif;
   user-select: none;
 }
-section, article, aside, div, span, h1, h2, h3, h4, h5, h6, main, header, footer {
-  font-family: 'Noto Sans KR', sans-serif;
+section,
+article,
+aside,
+div,
+span,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+main,
+header,
+footer {
+  font-family: "Noto Sans KR", sans-serif;
 }
 button {
   cursor: pointer;
@@ -297,7 +338,12 @@ label {
   font-weight: 400;
   margin: 0;
 }
-h1, .h1, h2, .h2, h3, .h3 {
+h1,
+.h1,
+h2,
+.h2,
+h3,
+.h3 {
   margin: 0;
 }
 th {
@@ -310,7 +356,7 @@ p {
   position: relative;
 
   &::before {
-    content: '*';
+    content: "*";
     position: absolute;
     left: -6px;
     top: 50%;
@@ -333,82 +379,100 @@ p {
 }
 
 /* transition */
-.scale-transition-enter-active, .scale-transition-leave-active {
+.scale-transition-enter-active,
+.scale-transition-leave-active {
   transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1) !important;
 }
 .scale-transition-move {
   transition: transform 0.6s;
 }
-.scale-transition-enter, .scale-transition-leave, .scale-transition-leave-to {
+.scale-transition-enter,
+.scale-transition-leave,
+.scale-transition-leave-to {
   opacity: 0;
   transform: scale(0);
 }
 
-.scale-rotate-transition-enter-active, .scale-rotate-transition-leave-active {
+.scale-rotate-transition-enter-active,
+.scale-rotate-transition-leave-active {
   transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1) !important;
 }
 .scale-rotate-transition-move {
   transition: transform 0.6s;
 }
-.scale-rotate-transition-enter, .scale-rotate-transition-leave, .scale-rotate-transition-leave-to {
+.scale-rotate-transition-enter,
+.scale-rotate-transition-leave,
+.scale-rotate-transition-leave-to {
   opacity: 0;
   transform: scale(0) rotate(-45deg);
 }
 
-.scale-rotate-reverse-transition-enter-active, .scale-rotate-reverse-transition-leave-active {
+.scale-rotate-reverse-transition-enter-active,
+.scale-rotate-reverse-transition-leave-active {
   transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1) !important;
 }
 .scale-rotate-reverse-transition-move {
   transition: transform 0.6s;
 }
-.scale-rotate-reverse-transition-enter, .scale-rotate-reverse-transition-leave, .scale-rotate-reverse-transition-leave-to {
+.scale-rotate-reverse-transition-enter,
+.scale-rotate-reverse-transition-leave,
+.scale-rotate-reverse-transition-leave-to {
   opacity: 0;
   transform: scale(0) rotate(45deg);
 }
 
-.message-transition-enter-active, .message-transition-leave-active {
+.message-transition-enter-active,
+.message-transition-leave-active {
   transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1) !important;
 }
 .message-transition-move {
   transition: transform 0.6s;
 }
-.message-transition-enter, .message-transition-leave-to {
+.message-transition-enter,
+.message-transition-leave-to {
   opacity: 0;
   transform: translateY(-15px);
 }
-.message-transition-leave, .message-transition-leave-active {
+.message-transition-leave,
+.message-transition-leave-active {
   position: absolute;
 }
 
-.slide-y-transition-enter-active, .slide-y-transition-leave-active {
+.slide-y-transition-enter-active,
+.slide-y-transition-leave-active {
   transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1) !important;
 }
 .slide-y-transition-move {
   transition: transform 0.6s;
 }
-.slide-y-transition-enter, .slide-y-transition-leave-to {
+.slide-y-transition-enter,
+.slide-y-transition-leave-to {
   opacity: 0;
   transform: translateY(-15px);
 }
 
-.slide-y-reverse-transition-enter-active, .slide-y-reverse-transition-leave-active {
+.slide-y-reverse-transition-enter-active,
+.slide-y-reverse-transition-leave-active {
   transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1) !important;
 }
 .slide-y-reverse-transition-move {
   transition: transform 0.6s;
 }
-.slide-y-reverse-transition-enter, .slide-y-reverse-transition-leave-to {
+.slide-y-reverse-transition-enter,
+.slide-y-reverse-transition-leave-to {
   opacity: 0;
   transform: translateY(15px);
 }
 
-.scroll-y-transition-enter-active, .scroll-y-transition-leave-active {
+.scroll-y-transition-enter-active,
+.scroll-y-transition-leave-active {
   transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1) !important;
 }
 .scroll-y-transition-move {
   transition: transform 0.6s;
 }
-.scroll-y-transition-enter, .scroll-y-transition-leave-to {
+.scroll-y-transition-enter,
+.scroll-y-transition-leave-to {
   opacity: 0;
 }
 .scroll-y-transition-enter {
@@ -418,13 +482,15 @@ p {
   transform: translateY(15px);
 }
 
-.scroll-y-reverse-transition-enter-active, .scroll-y-reverse-transition-leave-active {
+.scroll-y-reverse-transition-enter-active,
+.scroll-y-reverse-transition-leave-active {
   transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1) !important;
 }
 .scroll-y-reverse-transition-move {
   transition: transform 0.6s;
 }
-.scroll-y-reverse-transition-enter, .scroll-y-reverse-transition-leave-to {
+.scroll-y-reverse-transition-enter,
+.scroll-y-reverse-transition-leave-to {
   opacity: 0;
 }
 .scroll-y-reverse-transition-enter {
@@ -434,13 +500,15 @@ p {
   transform: translateY(-15px);
 }
 
-.scroll-x-transition-enter-active, .scroll-x-transition-leave-active {
+.scroll-x-transition-enter-active,
+.scroll-x-transition-leave-active {
   transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1) !important;
 }
 .scroll-x-transition-move {
   transition: transform 0.6s;
 }
-.scroll-x-transition-enter, .scroll-x-transition-leave-to {
+.scroll-x-transition-enter,
+.scroll-x-transition-leave-to {
   opacity: 0;
 }
 .scroll-x-transition-enter {
@@ -450,13 +518,15 @@ p {
   transform: translateX(15px);
 }
 
-.scroll-x-reverse-transition-enter-active, .scroll-x-reverse-transition-leave-active {
+.scroll-x-reverse-transition-enter-active,
+.scroll-x-reverse-transition-leave-active {
   transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1) !important;
 }
 .scroll-x-reverse-transition-move {
   transition: transform 0.6s;
 }
-.scroll-x-reverse-transition-enter, .scroll-x-reverse-transition-leave-to {
+.scroll-x-reverse-transition-enter,
+.scroll-x-reverse-transition-leave-to {
   opacity: 0;
 }
 .scroll-x-reverse-transition-enter {
@@ -466,46 +536,53 @@ p {
   transform: translateX(-15px);
 }
 
-.slide-x-transition-enter-active, .slide-x-transition-leave-active {
+.slide-x-transition-enter-active,
+.slide-x-transition-leave-active {
   transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1) !important;
 }
 .slide-x-transition-move {
   transition: transform 0.6s;
 }
-.slide-x-transition-enter, .slide-x-transition-leave-to {
+.slide-x-transition-enter,
+.slide-x-transition-leave-to {
   opacity: 0;
   transform: translateX(-15px);
 }
 
-.slide-x-reverse-transition-enter-active, .slide-x-reverse-transition-leave-active {
+.slide-x-reverse-transition-enter-active,
+.slide-x-reverse-transition-leave-active {
   transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1) !important;
 }
 .slide-x-reverse-transition-move {
   transition: transform 0.6s;
 }
-.slide-x-reverse-transition-enter, .slide-x-reverse-transition-leave-to {
+.slide-x-reverse-transition-enter,
+.slide-x-reverse-transition-leave-to {
   opacity: 0;
   transform: translateX(15px);
 }
 
-.fade-transition-enter-active, .fade-transition-leave-active {
+.fade-transition-enter-active,
+.fade-transition-leave-active {
   transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1) !important;
 }
 .fade-transition-move {
   transition: transform 0.6s;
 }
-.fade-transition-enter, .fade-transition-leave-to {
+.fade-transition-enter,
+.fade-transition-leave-to {
   opacity: 0 !important;
 }
 
-.fab-transition-enter-active, .fab-transition-leave-active {
+.fab-transition-enter-active,
+.fab-transition-leave-active {
   transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1) !important;
 }
 .fab-transition-move {
   transition: transform 0.6s;
 }
-.fab-transition-enter, .fab-transition-leave-to {
+.fab-transition-enter,
+.fab-transition-leave-to {
   transform: scale(0) rotate(-45deg);
 }
-
 </style>

@@ -3,7 +3,10 @@
     <header>
       <article>
         <h1>
-          <div class="icon" :style="{ backgroundImage: 'url(' + editIcon + ')' }" />
+          <div
+            class="icon"
+            :style="{ backgroundImage: 'url(' + editIcon + ')' }"
+          />
           <span>카테고리 관리</span>
         </h1>
       </article>
@@ -18,7 +21,12 @@
     </header>
     <article class="contents">
       <ul>
-        <li v-for="(item, idx) in orderCategoryList" :key="idx" :data-seq="item.NTC_CTGR_SN" :data-order="item.ODR">
+        <li
+          v-for="(item, idx) in orderCategoryList"
+          :key="idx"
+          :data-seq="item.NTC_CTGR_SN"
+          :data-order="item.ODR"
+        >
           <div class="orderBtn">
             <button @click="listUp"><i class="fas fa-caret-up" /></button>
             <button @click="listDown"><i class="fas fa-caret-down" /></button>
@@ -27,11 +35,15 @@
             <input v-model="item.NTC_CTGR_NM" />
           </div>
           <div class="delBtn">
-            <button title="카테고리 삭제" @click="listDel"><i class="fas fa-minus" /></button>
+            <button title="카테고리 삭제" @click="listDel">
+              <i class="fas fa-minus" />
+            </button>
           </div>
         </li>
         <li class="addCategory">
-          <button title="카테고리 추가" @click="listAdd"><i class="fas fa-plus" />카테고리 추가</button>
+          <button title="카테고리 추가" @click="listAdd">
+            <i class="fas fa-plus" />카테고리 추가
+          </button>
         </li>
       </ul>
     </article>
@@ -39,10 +51,10 @@
 </template>
 
 <script>
-import { Store } from '../../store';
-import { useAlert, useFetch, useForm, useRest } from '../../hook';
-import editIcon from '../../img/icon/edit.png';
-import axios from 'axios';
+import { Store } from "../../store";
+import { useAlert, useAxios, useForm } from "../../hook";
+import editIcon from "../../img/icon/edit.png";
+import axios from "axios";
 export default {
   props: {
     noticeList: Array,
@@ -51,95 +63,116 @@ export default {
     return {
       editIcon,
       noticeCategoryList: [],
-      editData: []
-    }
+      editData: [],
+    };
   },
   created() {
     this.getCategoryList();
   },
   methods: {
     getCategoryList() {
-      let data = {TASK: 'R_NTC_CTGR_LIST'};
-      axios.post(this.$store.state.dbUrl + '/MNGR_NTC', useForm(data)).then(({data}) => {
-        if (!data.RESULT && data?.CAUSE == 'SESSIONFAIL') return this.$store.dispatch('sessionFail');
-        if (!data.RESULT) return useAlert.error('카테고리 관리', '카테고리 리스트를 불러오지 못했습니다.');
+      useAxios.get("/admin/ntc_ctgr").then(({ data }) => {
+        if (!data.RESULT && data?.CAUSE == "SESSIONFAIL")
+          return this.$store.dispatch("sessionFail");
+        if (!data.RESULT)
+          return useAlert.error(
+            "카테고리 관리",
+            "카테고리 리스트를 불러오지 못했습니다."
+          );
         this.noticeCategoryList = data.NTC_CTGR_LIST;
         this.editData = [...data.NTC_CTGR_LIST];
       });
     },
     noticeCategorySave() {
       let resultYN = true;
-      this.editData.forEach(obj => {
-        if (obj.NTC_CTGR_NM == '') return resultYN = false;
+      this.editData.forEach((obj) => {
+        if (obj.NTC_CTGR_NM == "") return (resultYN = false);
       });
-      if (!resultYN) return useAlert('카테고리 관리', '빈칸이 존재합니다.');
+      if (!resultYN)
+        return useAlert.warn("카테고리 관리", "빈칸이 존재합니다.");
 
       // 저장
-      let data = {TASK: 'C_NTC_CTGR_LIST', NTC_CTGR_LIST: this.editData};
-      axios.post(this.$store.state.dbUrl + '/MNGR_NTC', useForm(data)).then(({data}) => {
-        if (!data.RESULT && data?.CAUSE == 'SESSIONFAIL') return this.$store.dispatch('sessionFail');
-        if (!data.RESULT) return useAlert.error('카테고리 관리', '카테고리가 저장에 실패하였습니다.');
-        useAlert.success('카테고리 관리', this.editData.length + '개의 카테고리가 저장되었습니다.');
-        
-        this.$emit('getList');
-        this.$emit('notice-category-modal-close');
-      }).catch(() => {
-        useAlert.error('카테고리 관리', '카테고리가 저장에 실패하였습니다.');
-      });
+      let data = { NTC_CTGR_LIST: this.editData };
+      useAxios
+        .post("/admin/ntc_ctgr", useForm(data))
+        .then(({ data }) => {
+          if (!data.RESULT && data?.CAUSE == "SESSIONFAIL")
+            return this.$store.dispatch("sessionFail");
+          if (!data.RESULT)
+            return useAlert.error(
+              "카테고리 관리",
+              "카테고리가 저장에 실패하였습니다."
+            );
+          useAlert.success(
+            "카테고리 관리",
+            this.editData.length + "개의 카테고리가 저장되었습니다."
+          );
 
+          this.$emit("getList");
+          this.$emit("notice-category-modal-close");
+        })
+        .catch(() => {
+          useAlert.error("카테고리 관리", "카테고리가 저장에 실패하였습니다.");
+        });
     },
     listUpDownFn(e, dir) {
       let tempList = [];
       let parentNode = e.currentTarget.parentNode.parentNode;
-      let order = parentNode.getAttribute('data-order');
-      let otherObj = this.editData.filter(x => x.ODR != order);
-      let thisObj = this.editData.find(x => x.ODR == order);
-      
-      if (order == (dir == 'up' ? '1' : this.editData.length)) return;
-      let tempObj = this.editData.find(x => x.ODR == Number(thisObj.ODR) + (dir == 'up' ? -1 : 1));
+      let order = parentNode.getAttribute("data-order");
+      let otherObj = this.editData.filter((x) => x?.ODR != order);
+      let thisObj = this.editData.find((x) => x?.ODR == order);
 
-      thisObj.ODR = Number(thisObj.ODR) + (dir == 'up' ? -1 : 1);
-      tempObj.ODR = Number(tempObj?.ODR) + (dir == 'up' ? 1 : -1);
+      if (order == (dir == "up" ? "1" : this.editData.length)) return;
+      let tempObj = this.editData.find(
+        (x) => x?.ODR == Number(thisObj?.ODR ?? 1) + (dir == "up" ? -1 : 1)
+      );
 
-      otherObj.forEach(obj => tempList.push(obj));
+      thisObj.ODR = Number(thisObj?.ODR) + (dir == "up" ? -1 : 1);
+      tempObj.ODR = Number(tempObj?.ODR) + (dir == "up" ? 1 : -1);
+
+      otherObj.forEach((obj) => tempList.push(obj));
       tempList.push(thisObj);
       this.editData = tempList;
     },
     listUp(e) {
-      this.listUpDownFn(e, 'up');
+      this.listUpDownFn(e, "up");
     },
     listDown(e) {
-      this.listUpDownFn(e, 'down');
+      this.listUpDownFn(e, "down");
     },
     listDel(e) {
-      let seq = e.currentTarget.parentNode.parentNode.getAttribute('data-seq');
-      let order = e.currentTarget.parentNode.parentNode.getAttribute('data-order');
-      let thisCategoryList = this.noticeList.filter(x => x.NTC_CTGR_SN == seq);
+      let seq = e.currentTarget.parentNode.parentNode.getAttribute("data-seq");
+      let order =
+        e.currentTarget.parentNode.parentNode.getAttribute("data-order");
+      let thisCategoryList = this.noticeList.filter(
+        (x) => x.NTC_CTGR_SN == seq
+      );
       let tempArr = [];
       if (thisCategoryList.length != 0) {
-        Store.setAlertYN(true);
-        Store.setAlertInfo({icon: 'warn', title: '카테고리 관리', text: '해당 카테고리에 속한 게시글이 있습니다.'});
-        return;
+        return useAlert.warn(
+          "카테고리 관리",
+          "해당 카테고리에 속한 게시글이 있습니다."
+        );
       }
 
-      let tempOrderArrUp = this.editData.filter(x => x.ODR < order);
-      let tempOrderArrDown = this.editData.filter(x => x.ODR > order);
+      let tempOrderArrUp = this.editData.filter((x) => x.ODR < order);
+      let tempOrderArrDown = this.editData.filter((x) => x.ODR > order);
 
-      tempOrderArrUp.forEach(obj => tempArr.push(obj));
-      tempOrderArrDown.forEach(obj => {
+      tempOrderArrUp.forEach((obj) => tempArr.push(obj));
+      tempOrderArrDown.forEach((obj) => {
         obj.ODR -= 1;
         tempArr.push(obj);
       });
-      
+
       this.editData = tempArr;
     },
     listAdd(e) {
       let tempArr = [...this.editData];
       let newCategoryObj = {
         ODR: Number(tempArr.length) + 1,
-        NTC_CTGR_NM: '',
-        NTC_CTGR_SN: 0
-      }
+        NTC_CTGR_NM: "",
+        NTC_CTGR_SN: 0,
+      };
       tempArr.push(newCategoryObj);
       this.editData = tempArr;
       console.log(this.editData);
@@ -148,9 +181,9 @@ export default {
   computed: {
     orderCategoryList() {
       return this.editData.sort((a, b) => a.ODR - b.ODR);
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>

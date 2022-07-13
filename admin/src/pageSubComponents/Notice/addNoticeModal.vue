@@ -88,8 +88,7 @@
         <uploadFiles
           :fileList="addNoticeFileList"
           @setFileList="setNoticeFileList"
-          :url="'/ntc'"
-          :prop="'D_NTC_FILE'"
+          :delUrl="'/admin/ntc_atchfile'"
         />
         <div class="info">
           <span> 작성자 : {{ addNoticeData.WRTR_NM }} </span>
@@ -122,31 +121,32 @@ export default {
   },
   methods: {
     getCategoryList() {
-      // useAxios.get("/admin/ntc_ctgr").then(({ data }) => {
-      // console.log(data);
-      // if (!data.RESULT && data?.CAUSE == "SESSIONFAIL")
-      // return this.$store.dispatch("sessionFail");
-      // this.noticeCategoryList = data.NTC_CTGR_LIST;
-      // this.editData = [...data.NTC_CTGR_LIST];
+      useAxios.get("/admin/ntc_ctgr").then(({ data }) => {
+        console.log(data);
+        if (!data.RESULT && data?.CAUSE == "SESSIONFAIL")
+          return this.$store.dispatch("sessionFail");
+        this.noticeCategoryList = data.NTC_CTGR_LIST;
+        this.editData = [...data.NTC_CTGR_LIST];
 
-      if (this.modalType == "C") {
-        this.addNoticeData = {
-          ATCHFILE_LIST: [],
-          CMNT_YN: false,
-          NTC_CN: "",
-          NTC_CTGR_SN: "",
-          NTC_TITLE: "",
-          POI_SN: null,
-          TOPFIX_LDAY: "",
-          TOPFIX_YN: "N",
-          WRTR_NM: this.$store?.loginInfo?.MBR_NM,
-          WRTR_SN: this.$store?.loginInfo?.WRTR_SN,
-        };
-        this.addNoticeData.NTC_CTGR_SN = this.noticeCategoryList[0].NTC_CTGR_SN;
-        return;
-      }
-      this.getDetailData();
-      // });
+        if (this.modalType == "C") {
+          this.addNoticeData = {
+            ATCHFILE_LIST: [],
+            CMNT_YN: false,
+            NTC_CN: "",
+            NTC_CTGR_SN: "",
+            NTC_TITLE: "",
+            POI_SN: null,
+            TOPFIX_LDAY: "",
+            TOPFIX_YN: false,
+            WRTR_NM: this.$store?.loginInfo?.MBR_NM,
+            WRTR_SN: this.$store?.loginInfo?.WRTR_SN,
+          };
+          this.addNoticeData.NTC_CTGR_SN =
+            this.noticeCategoryList[0].NTC_CTGR_SN;
+          return;
+        }
+        this.getDetailData();
+      });
     },
     getDetailData() {
       useAxios.get("/admin/ntc/" + this.selectNoticeSeq).then(({ data }) => {
@@ -165,6 +165,7 @@ export default {
     },
 
     noticeSave() {
+      console.log(this.addNoticeData);
       let titleValue = this.$refs.titleRef.value;
       let contentsValue = this.$refs.contentsRef.value;
       if (titleValue == "" || contentsValue == "") {
@@ -177,26 +178,34 @@ export default {
         return useAlert.warn("공지사항 작성", "고정 기간을 입력해주세요.");
       }
 
-      this.addNoticeData.TOPFIX_YN = this.addNoticeData.TOPFIX_YN ? "Y" : "N";
-      this.addNoticeData.CMNT_YN = this.addNoticeData.CMNT_YN ? "Y" : "N";
-
-      this.addNoticeData.TASK = "C_NTC_DTL";
-      let data = this.addNoticeData;
-      data = { ...data, NTC_CTGR_SN: this.addNoticeData?.NTC_CTGR_SN || 1 };
-      data = { ...data, POI_SN: this.addNoticeData?.POI_SN || 1 };
+      let data = { ...this.addNoticeData };
+      data = {
+        ...data,
+        NTC_CTGR_SN: this.addNoticeData?.NTC_CTGR_SN || 1,
+        POI_SN: this.addNoticeData?.POI_SN || 1,
+        TOPFIX_YN: this.addNoticeData?.TOPFIX_YN ? "Y" : "N",
+        CMNT_YN: this.addNoticeData?.CMNT_YN ? "Y" : "N",
+      };
       let files = { ATCHFILE_LIST: this.addNoticeFileList };
-      console.log(files);
+
+      this.$store.dispatch("setProgressPercent", 0);
 
       useAxios
         .post(
-          "/admin/ntc" +
-            (this.modalType == "C" ? "" : "/" + this.selectNoticeSeq),
-          useForm(data, files)
+          "/ntc" + (this.modalType == "C" ? "" : "/" + this.selectNoticeSeq),
+          useForm(data, files),
+          {
+            // onUploadProgress: (e) => {
+            //   const { loaded, total } = e;
+            //   let percent = Math.floor((loaded * 100) / total);
+            //   this.$store.dispatch("setProgressPercent", percent);
+            // },
+          }
         )
         .then(({ data }) => {
+          this.$store.dispatch("setProgressPercent", 0);
           if (!data.RESULT && data?.CAUSE == "SESSIONFAIL")
             return this.$store.dispatch("sessionFail");
-          console.log(data);
           if (!data.RESULT)
             return useAlert.error("공지사항 저장", "공지가 저장실패였습니다.");
 

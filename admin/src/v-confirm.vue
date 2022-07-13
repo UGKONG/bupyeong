@@ -8,27 +8,52 @@
           <p class="text" v-text="returnInfo.text" />
         </div>
       </div>
-      <v-btn small elevation="0" @click="no">취소</v-btn>
-      <v-btn small elevation="0" @click="ok">확인</v-btn>
+      <v-btn small @click="no">취소</v-btn>
+      <v-btn small @click="ok">확인</v-btn>
     </section>
     <div class="bg" v-if="returnYN" />
   </div>
 </template>
 
 <script>
-import { Store } from './store';
+import { Store } from "./store";
 export default {
   data() {
     return {
       list: {
-        info: {icon: 'fas fa-info-circle', txt: '#f8f9fb', bg: '#0c86eb', progress: 'rgb(12 117 204)'},
-        warn: {icon: 'fas fa-exclamation-triangle', txt: '#353a40', bg: '#feb100', progress: 'rgb(196 140 11)'},
-        success: {icon: 'fas fa-check-circle', txt: '#f8f9fb', bg: '#54ac3b', progress: 'rgb(65 158 38)'},
-        error: {icon: 'fas fa-times', txt: '#f8f9fb', bg: '#ff395a', progress: 'rgb(214 41 70)'},
-        other: {icon: 'fas fa-question', txt: '#f8f9fb', bg: '#464646', progress: 'rgb(61 52 52)'}
+        info: {
+          icon: "fas fa-info-circle",
+          txt: "#f8f9fb",
+          bg: "#0c86eb",
+          progress: "rgb(12 117 204)",
+        },
+        warn: {
+          icon: "fas fa-exclamation-triangle",
+          txt: "#353a40",
+          bg: "#feb100",
+          progress: "rgb(196 140 11)",
+        },
+        success: {
+          icon: "fas fa-check-circle",
+          txt: "#f8f9fb",
+          bg: "#54ac3b",
+          progress: "rgb(65 158 38)",
+        },
+        error: {
+          icon: "fas fa-times",
+          txt: "#f8f9fb",
+          bg: "#ff395a",
+          progress: "rgb(214 41 70)",
+        },
+        other: {
+          icon: "fas fa-question",
+          txt: "#f8f9fb",
+          bg: "#464646",
+          progress: "rgb(61 52 52)",
+        },
       },
-      defaultColor: '#ffffff00'
-    }
+      defaultColor: "#ffffff00",
+    };
   },
   methods: {
     confirmClose() {
@@ -41,23 +66,29 @@ export default {
     no() {
       Store.confirmInfo.no();
       Store.setConfirmYN(false);
-    }
+    },
   },
   computed: {
-    obj (){ return this.list[Store.confirmInfo.icon] },
-    confirmProgressColor () { return this.obj?.progress },
-    confirmStyle() { 
-      return { 
-        backgroundColor: this.obj?.bg, 
-        color: this.obj?.txt, 
-        top: (this.returnYN ?? false) ? '30px' : '-120px'
-      }
+    obj() {
+      return this.list[Store.confirmInfo.icon];
     },
-    returnIcon() { return this.obj?.icon },
+    confirmProgressColor() {
+      return this.obj?.progress;
+    },
+    confirmStyle() {
+      return {
+        backgroundColor: this.obj?.bg,
+        color: this.obj?.txt,
+        top: this.returnYN ?? false ? "30px" : "-120px",
+      };
+    },
+    returnIcon() {
+      return this.obj?.icon;
+    },
     returnYN: () => Store.confirmYN,
     returnInfo: () => Store.confirmInfo,
-  }
-}
+  },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -82,8 +113,8 @@ export default {
   border-radius: 4px;
   box-shadow: 0px 2px 6px #00000050;
   z-index: 999999999999999999999999999;
-  transition: .3s;
-  
+  transition: 0.3s;
+
   & > .wrap {
     position: relative;
     width: 100%;
@@ -93,7 +124,6 @@ export default {
     padding: 10px;
 
     & > div {
-
       &.icon {
         width: 50px;
         min-width: 50px;
@@ -108,7 +138,7 @@ export default {
 
         & > .title {
           font-weight: 400;
-          letter-spacing: .5px;
+          letter-spacing: 0.5px;
           height: 50%;
         }
         & > .text {
@@ -123,20 +153,18 @@ export default {
           font-weight: 300;
         }
       }
-
     }
-
   }
 
   button {
     float: right;
     margin-right: 6px;
     border: 1px solid #e6a42b20;
-    &:first-of-type{
-      background-color: rgb(12,117,204);
+    &:first-of-type {
+      background-color: rgb(12, 117, 204);
       color: #75bcf7;
     }
-    &:last-of-type{
+    &:last-of-type {
       background-color: #055cc8;
       color: #fff;
     }

@@ -4,9 +4,10 @@ NodeList.prototype.all = function (fn) {this.forEach((el, idx) => fn(el, idx))}
 export const useEl = (el = null) => document.querySelector(el);
 export const useEls = (el = null) => document.querySelectorAll(el);
 
+// axios.defaults.withCredentials = false;
 export const useAxios = axios.create({ 
-  baseURL: 'http://218.38.179.52:8080', 
-  timeout: 10000 
+  baseURL: 'http://bpcp.liansoft.co.kr:8080',
+  timeout: 10000,
 })
 
 export const useFetch = ( _url = '/', task = '', _params = {}, _success = null, _error = null, options = false) => {

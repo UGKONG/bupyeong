@@ -9,15 +9,19 @@ Vue.use(vuex);
 
 export default new vuex.Store({
   state: {
-    dbUrl: 'http://bpcp1.iptime.org:8080/admin',
+    dbUrl: 'http://bpcp.liansoft.co.kr:8080/admin',
     loginYN: false,
     loginUser: {},
     userAuthority: [],
+    isProgress: false,
+    progressPercent: 0,
   },
   mutations: {
     setLoginYN: (state, payload) => state.loginYN = payload,
     setLoginUser: (state, payload) => state.loginUser = payload,
     setUserAuthority: (state, payload) => state.userAuthority = payload,
+    setIsProgress: (state, payload) => state.isProgress = payload,
+    setProgressPercent: (state, payload) => state.progressPercent = payload,
   },
   actions: {
     setLoginYN: ({ state, commit, dispatch }, payload) => {
@@ -39,7 +43,9 @@ export default new vuex.Store({
       useAlert.info('로그아웃', '로그아웃되었습니다.');
       console.log('세션이 만료되었습니다.');
       commit('setLoginYN', false);
-    }
+    },
+    setIsProgress: ({ commit }, payload) => commit('setIsProgress', payload),
+    setProgressPercent: ({ commit }, payload) => commit('setProgressPercent', payload),
   }
 });
 

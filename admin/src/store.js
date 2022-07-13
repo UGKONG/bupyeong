@@ -8,25 +8,23 @@ export const Store = new Vue({
   store: vuex,
   data: {
     globalURL: 'http://bodyscanner.iptime.org:8082/',
-    // globalURL: 'http://192.168.0.12:8082/',
-    // globalURL: 'http://localhost:8082/',
     defaultIconList: [
       {
-        MENU_SN: '9001',
+        ICON_SN: '9001',
         PRNT_SN: 0, 
-        TYPE:'modal', 
-        MENU_NM: '설정', 
+        ICON_TYPE:'1', 
+        ICON_NM: '설정', 
         // ICON_PATH: 'assets/admin/images/', 
         ICON_FN: 'setting.png', 
-        CPNT_NM: 'Setting'
+        CMPNT: 'Setting'
       }, {
-        MENU_SN: '9002',
+        ICON_SN: '9002',
         PRNT_SN: 0, 
-        TYPE:'modal', 
-        MENU_NM: '대쉬보드', 
+        ICON_TYPE:'1', 
+        ICON_NM: '대쉬보드', 
         // ICON_PATH: 'assets/admin/images/', 
         ICON_FN: 'dashboard.png', 
-        CPNT_NM: 'Dashboard'
+        CMPNT: 'Dashboard'
       },
     ],
     iconList: [],

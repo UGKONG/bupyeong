@@ -4,7 +4,10 @@
     <header>
       <article>
         <h1>
-          <div class="icon" :style="{ backgroundImage: 'url(' + editIcon + ')' }" />
+          <div
+            class="icon"
+            :style="{ backgroundImage: 'url(' + editIcon + ')' }"
+          />
           <span>{{ modalTitle }}</span>
         </h1>
       </article>
@@ -13,8 +16,10 @@
       </button>
     </header>
     <article class="contents">
-      <component :is="componentName"
+      <component
+        :is="componentName"
         :sendData="sendData"
+        @modalClose="modalClose"
         :modalInDarkDivOpen="modalInDarkDivOpen"
         :modalInDarkDivClose="modalInDarkDivClose"
       />
@@ -23,8 +28,8 @@
 </template>
 
 <script>
-import { Store } from './store';
-import editIcon from './img/icon/edit.png';
+import { Store } from "./store";
+import editIcon from "./img/icon/edit.png";
 
 export default {
   props: {
@@ -32,48 +37,60 @@ export default {
     modalSeq: String,
     modalTitle: String,
   },
-  components: { // 사용할 컴포넌트 리스트
-    Dashboard: () => import('./pageComponents/Dashboard'), // Dashboard, // 대쉬보드 페이지
-    Setting: () => import('./pageComponents/Setting'), // Setting,  // 설정 페이지
-    HtmlEditor: () => import('./pageComponents/HtmlEditor'), // HtmlEditor, // 소개 페이지 수정
-    Notice: () => import('./pageComponents/Notice'), // Notice, // 공지사항
-    University: () => import('./pageComponents/University'), // Survey, // 설문조사
-    TeacherManagement: () => import('./pageComponents/TeacherManagement'), // University, // 도시재생대학 - 과정관리
-    ResidentBusiness: () => import('./pageComponents/ResidentBusiness'), // TeacherManagement, // 도시재생대학 - 강사관리
-    Survey: () => import('./pageComponents/Survey'), // ResidentBusiness, // 주민공모사업 - 공모사업 관리
-    ResidentCommunity: () => import('./pageComponents/ResidentCommunity'), // ResidentCommunity, // 주민공동체 - 공동체 관리
-    BusinessRecord: () => import('./pageComponents/BusinessRecord'), // BusinessPromotion, // 사업홍보물
-    BusinessPromotion: () => import('./pageComponents/BusinessPromotion'), // BusinessRecord, // 사업기록
-    ContestSchedule: () => import('./pageComponents/ContestSchedule'), // ContestSchedule, // 도시재생정보 - 공모일정 관리
-    FoodShop: () => import('./pageComponents/FoodShop'), // FoodShop, // 푸드플랫폼 - 상점 관리
-    FoodTownShop: () => import('./pageComponents/FoodTownShop'), // FoodTownShop, // 먹거리타운 - 상점 관리
-    MediaSchedule: () => import('./pageComponents/MediaSchedule'), // MediaSchedule, // 미디어글라스 - 미디어 스케줄 관리
-    DlabMedia: () => import('./pageComponents/DlabMedia'), // DlabMedia, // D-LAB - 공식 미디어 관리
-    DlabReservation: () => import('./pageComponents/DlabReservation'), // DlabReservation, // D-LAB - 예약 관리
-    DlabSurvey: () => import('./pageComponents/DlabSurvey'), // DlabSurvey, // D-LAB - 설문 관리
-    PublicHearing: () => import('./pageComponents/PublicHearing'), // PublicHearing, // 주민공청회 - 공청회 관리
-    PublicHearingSurvey: () => import('./pageComponents/PublicHearingSurvey'), // PublicHearingSurvey, // 주민공청회 - 설문 관리
+  components: {
+    // 사용할 컴포넌트 리스트
+    Dashboard: () => import("./pageComponents/Dashboard"), // Dashboard, // 대쉬보드 페이지
+    Setting: () => import("./pageComponents/Setting"), // Setting,  // 설정 페이지
+    HtmlEditor: () => import("./pageComponents/HtmlEditor"), // HtmlEditor, // 소개 페이지 수정
+    Notice: () => import("./pageComponents/Notice"), // Notice, // 공지사항
+    University: () => import("./pageComponents/University"), // Survey, // 설문조사
+    TeacherManagement: () => import("./pageComponents/TeacherManagement"), // University, // 도시재생대학 - 과정관리
+    ResidentBusiness: () => import("./pageComponents/ResidentBusiness"), // TeacherManagement, // 도시재생대학 - 강사관리
+    Survey: () => import("./pageComponents/Survey"), // ResidentBusiness, // 주민공모사업 - 공모사업 관리
+    ResidentCommunity: () => import("./pageComponents/ResidentCommunity"), // ResidentCommunity, // 주민공동체 - 공동체 관리
+    BusinessRecord: () => import("./pageComponents/BusinessRecord"), // BusinessPromotion, // 사업홍보물
+    BusinessPromotion: () => import("./pageComponents/BusinessPromotion"), // BusinessRecord, // 사업기록
+    ContestSchedule: () => import("./pageComponents/ContestSchedule"), // ContestSchedule, // 도시재생정보 - 공모일정 관리
+    FoodShop: () => import("./pageComponents/FoodShop"), // FoodShop, // 푸드플랫폼 - 상점 관리
+    FoodTownShop: () => import("./pageComponents/FoodTownShop"), // FoodTownShop, // 먹거리타운 - 상점 관리
+    MediaSchedule: () => import("./pageComponents/MediaSchedule"), // MediaSchedule, // 미디어글라스 - 미디어 스케줄 관리
+    DlabMedia: () => import("./pageComponents/DlabMedia"), // DlabMedia, // D-LAB - 공식 미디어 관리
+    DlabReservation: () => import("./pageComponents/DlabReservation"), // DlabReservation, // D-LAB - 예약 관리
+    DlabSurvey: () => import("./pageComponents/DlabSurvey"), // DlabSurvey, // D-LAB - 설문 관리
+    PublicHearing: () => import("./pageComponents/PublicHearing"), // PublicHearing, // 주민공청회 - 공청회 관리
+    PublicHearingSurvey: () => import("./pageComponents/PublicHearingSurvey"), // PublicHearingSurvey, // 주민공청회 - 설문 관리
   },
   data() {
     return {
       editIcon,
       sendData: {},
       darkDivYN: false,
-    }
+    };
   },
   created() {
-    if (this.modalSeq == '9001' || this.modalSeq == '9002') {
-      this.sendData = (Store.defaultIconList ?? []).find(x => x.MENU_SN == this.modalSeq);  
+    if (this.modalSeq == "9001" || this.modalSeq == "9002") {
+      this.sendData = (Store.defaultIconList ?? []).find(
+        (x) => x.ICON_SN == this.modalSeq
+      );
     } else {
-      this.sendData = (Store.iconList ?? []).find(x => x.MENU_SN == this.modalSeq);
+      this.sendData = (Store.iconList ?? []).find(
+        (x) => x.ICON_SN == this.modalSeq
+      );
     }
-    console.log('해당모달 정보 : ', this.sendData);
+    console.log("해당모달 정보 : ", this.sendData);
   },
   methods: {
-    modalInDarkDivOpen() { this.darkDivYN = true },
-    modalInDarkDivClose() { this.darkDivYN = false },
+    modalInDarkDivOpen() {
+      this.darkDivYN = true;
+    },
+    modalInDarkDivClose() {
+      this.darkDivYN = false;
+    },
+    modalClose() {
+      this.$emit("modalClose");
+    },
   },
-}
+};
 </script>
 
 <style lang="scss">
@@ -107,7 +124,7 @@ section.v-modal {
     justify-content: space-between;
     padding: 0 16px;
     height: 60px;
-    background-color: #FDF4F5;
+    background-color: #fdf4f5;
     button {
       float: right;
       display: block;

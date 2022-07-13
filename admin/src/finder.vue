@@ -4,12 +4,20 @@
     <header>
       <article>
         <h1>
-          <div class="icon" :style="{ backgroundImage: 'url(' + folderIcon + ')' }" />
-          <button v-if="folderInYN" class="finderBackBtn" @click="finderBackBtnClick">
+          <div
+            class="icon"
+            :style="{ backgroundImage: 'url(' + folderIcon + ')' }"
+          />
+          <button
+            v-if="folderInYN"
+            class="finderBackBtn"
+            @click="finderBackBtnClick"
+          >
             <i class="fas fa-chevron-left" /> 뒤로가기
           </button>
           <span>
-            {{ titleName }} <!-- 탐색기 제목 -->
+            {{ titleName }}
+            <!-- 탐색기 제목 -->
             <span v-if="folderInYN">
               <i class="fas fa-angle-right" />
               {{ modalSubTitle }}
@@ -24,19 +32,22 @@
 
     <!-- Finder Contents -->
     <article class="contents">
-
       <!-- Finder Side Menu -->
       <aside>
         <h2>폴더</h2>
         <ul>
-          <li v-for="item in bgIcon" 
-            :key="item.menuSeq" 
-            :class="item.MENU_NM"
+          <li
+            v-for="item in bgIcon"
+            :key="item.menuSeq"
+            :class="item.ICON_NM"
             @click="sideMenuClick"
           >
-            <button :class="{ active: activeMenu == item.MENU_NM}">
-              <div class="icon" :style="{ backgroundImage: 'url(' + folderIcon + ')' }" />
-              <span>{{ item.MENU_NM }}</span>
+            <button :class="{ active: activeMenu == item.ICON_NM }">
+              <div
+                class="icon"
+                :style="{ backgroundImage: 'url(' + folderIcon + ')' }"
+              />
+              <span>{{ item.ICON_NM }}</span>
             </button>
           </li>
         </ul>
@@ -45,44 +56,57 @@
       <!-- Finder Icon List -->
       <div class="folderList">
         <!-- Finder 1th Icon -->
-        <article v-for="item in filterIconList" v-show="!folderInYN"
+        <article
+          v-for="item in filterIconList"
+          v-show="!folderInYN"
           hint="1단 아이콘"
-          :key="'menu' + item.MENU_SN"
-          :data-type="item.TYPE"
-          :data-title="item.MENU_NM"
-          :data-seq="item.MENU_SN"
+          :key="'menu' + item.ICON_SN"
+          :data-type="item.ICON_TYPE"
+          :data-title="item.ICON_NM"
+          :data-seq="item.ICON_SN"
           :data-parentSeq="item.PRNT_SN"
-          :data-component-name="item.CPNT_NM"
+          :data-component-name="item.CMPNT"
           @dblclick="finderIconDbClick"
         >
-          <div :style="{ backgroundImage: 'url(' + (item.TYPE == 'folder' ? folderIcon : modalIcon) + ')' }" />
-          <p>{{ item.MENU_NM }}</p>
+          <div
+            :style="{
+              backgroundImage:
+                'url(' + (item.ICON_TYPE == '0' ? folderIcon : modalIcon) + ')',
+            }"
+          />
+          <p>{{ item.ICON_NM }}</p>
         </article>
         <!-- Finder 2th Icon -->
-        <article v-for="item in filterSubIconList_menu" v-show="folderInYN"
+        <article
+          v-for="item in filterSubIconList_menu"
+          v-show="folderInYN"
           hint="2단 아이콘"
-          :key="'subMenu' + item.MENU_SN"
-          :data-seq="item.MENU_SN"
-          :data-type="item.TYPE"
+          :key="'subMenu' + item.ICON_SN"
+          :data-seq="item.ICON_SN"
+          :data-type="item.ICON_TYPE"
           :data-parent-po="item.parentPo"
           :data-parentSeq="item.PRNT_SN"
-          :data-title="item.MENU_NM"
-          :data-component-name="item.CPNT_NM"
+          :data-title="item.ICON_NM"
+          :data-component-name="item.CMPNT"
           @dblclick="finderSetIconDbClick"
         >
-          <div :style="{ backgroundImage: 'url(' + (item.TYPE == 'folder' ? folderIcon : modalIcon) + ')' }" />
-          <p>{{ item.MENU_NM }}</p>
+          <div
+            :style="{
+              backgroundImage:
+                'url(' + (item.ICON_TYPE == '0' ? folderIcon : modalIcon) + ')',
+            }"
+          />
+          <p>{{ item.ICON_NM }}</p>
         </article>
       </div>
-
     </article>
   </section>
 </template>
 
 <script>
-import { Store } from './store.js';
-import folderIcon from './img/icon/folder.png';
-import modalIcon from './img/icon/document.png';
+import { Store } from "./store.js";
+import folderIcon from "./img/icon/folder.png";
+import modalIcon from "./img/icon/document.png";
 export default {
   props: {
     titleName: String,
@@ -100,7 +124,7 @@ export default {
   },
   data() {
     return {
-      bgIcon: Store.iconList_bg.filter(x => x.TYPE == 'folder'),
+      bgIcon: Store.iconList_bg.filter((x) => x.ICON_TYPE == "0"),
       folderIcon: folderIcon,
       modalIcon: modalIcon,
       finderStartPosition: [200, 100],
@@ -110,27 +134,27 @@ export default {
       mousePositionCalc: [0, 0],
       finderSeq: Store.finderSeq,
       finderInSeq: 0,
-    }
+    };
   },
   methods: {
     finderClose(e) {
       let className = e.currentTarget.className;
-      Store.finderCount = Store.finderCount.filter(x => x !== className);
+      Store.finderCount = Store.finderCount.filter((x) => x !== className);
       Store.finderIn = false;
     },
     sideMenuClick(e) {
       let className = e.currentTarget.className;
       Store.finderCount = [];
       Store.finderCount[0] = className;
-      Store.finderSeq = this.bgIcon.find(x => x.MENU_NM == className).MENU_SN;
+      Store.finderSeq = this.bgIcon.find((x) => x.ICON_NM == className).ICON_SN;
       Store.finderIn = false;
     },
     finderIconDbClick(e) {
-      let seq = e.currentTarget.getAttribute('data-seq');
-      let type = e.currentTarget.getAttribute('data-type');
-      let titleName = e.currentTarget.getAttribute('data-title');
-      let componentName = e.currentTarget.getAttribute('data-component-name');
-      if (type == 'modal') {
+      let seq = e.currentTarget.getAttribute("data-seq");
+      let type = e.currentTarget.getAttribute("data-type");
+      let titleName = e.currentTarget.getAttribute("data-title");
+      let componentName = e.currentTarget.getAttribute("data-component-name");
+      if (type == "1") {
         this.modalOpen(titleName);
         this.setModalSeq(seq);
         this.setComponentName(componentName);
@@ -144,30 +168,32 @@ export default {
       Store.finderIn = false;
     },
     finderSetIconDbClick(e) {
-      let seq = e.currentTarget.getAttribute('data-seq');
-      let titleName = e.currentTarget.getAttribute('data-title');
-      let componentName = e.currentTarget.getAttribute('data-component-name');
+      let seq = e.currentTarget.getAttribute("data-seq");
+      let titleName = e.currentTarget.getAttribute("data-title");
+      let componentName = e.currentTarget.getAttribute("data-component-name");
       this.setModalSeq(seq);
       this.modalOpen(titleName);
       this.setComponentName(componentName);
-    }
+    },
   },
   computed: {
     activeMenu() {
       return Store.finderCount[0];
     },
     filterIconList() {
-      return this.iconList_folder.filter(x => x.PRNT_SN == this.finderSeq);
+      return this.iconList_folder.filter((x) => x.PRNT_SN == this.finderSeq);
     },
     filterSubIconList_menu() {
-      return this.iconList_inFolder.filter(x => x.PRNT_SN == this.finderInSeq);
+      return this.iconList_inFolder.filter(
+        (x) => x.PRNT_SN == this.finderInSeq
+      );
     },
     folderInYN: () => Store.finderIn,
     iconList_bg: () => Store.iconList_bg,
     iconList_folder: () => Store.iconList_folder,
     iconList_inFolder: () => Store.iconList_inFolder,
-  }
-}
+  },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -195,7 +221,7 @@ section#finder {
     justify-content: space-between;
     padding: 0 16px;
     height: 60px;
-    background-color: #FDF4F5;
+    background-color: #fdf4f5;
     button[data-type="x"] {
       float: right;
       display: block;
@@ -264,7 +290,7 @@ section#finder {
     & > aside {
       width: 140px;
       height: 100%;
-      background-color: #EAE1E2;
+      background-color: #eae1e2;
       padding: 10px 0;
       h2 {
         font-size: 15px;
@@ -283,7 +309,8 @@ section#finder {
           justify-content: flex-start;
           background-color: transparent;
           cursor: pointer;
-          &:hover, &.active {
+          &:hover,
+          &.active {
             font-weight: 700;
           }
           div {
@@ -297,7 +324,6 @@ section#finder {
               font-size: 12px;
             }
           }
-
         }
       }
     }
@@ -349,7 +375,6 @@ section#finder {
           overflow: unset;
         }
       }
-      
     }
   }
 }

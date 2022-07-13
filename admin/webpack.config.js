@@ -59,6 +59,10 @@ module.exports = {
     new VueLoaderPlugin()
   ],
   devServer: {
-    open: true
+    open: true,
+    // https: true,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+    },
   }
 }

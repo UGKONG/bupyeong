@@ -62,8 +62,7 @@
 
 <script>
 import { Store } from "../../store";
-import { useAlert, useFileSize, useForm } from "@hook";
-import axios from "axios";
+import { useAlert, useFileSize, useForm, useAxios } from "@hook";
 
 export default {
   props: {
@@ -80,7 +79,7 @@ export default {
       type: String,
       default: "/",
     },
-    prop: {
+    delUrl: {
       type: String,
       default: "",
     },
@@ -139,9 +138,8 @@ export default {
             return;
           }
 
-          let data = { TASK: this.prop, ATCHFILE_SN: seq };
-          axios
-            .post(this.$store.state.dbUrl + this.url, useForm(data))
+          useAxios
+            .delete(this.delUrl + "/" + seq)
             .then(({ data }) => {
               if (!data.RESULT && data?.CAUSE == "SESSIONFAIL")
                 return this.$store.dispatch("sessionFail");

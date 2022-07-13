@@ -1,14 +1,20 @@
 <template>
   <section>
     <div id="summernote" />
-    <button @click="getHtmlCode">저장하기</button>
+    <button @click="postData">저장하기</button>
   </section>
 </template>
 
 <script>
+import { useAlert, useAxios, useForm } from "../hook";
+
 export default {
   props: {
     sendData: Object,
+    modalClose: Function,
+  },
+  created() {
+    this.getData();
   },
   mounted() {
     // https://summernote.org/
@@ -27,9 +33,26 @@ export default {
     };
   },
   methods: {
+    getData() {
+      useAxios
+        .get("/admin/proj_infm/" + this.sendData?.ICON_SN)
+        .then(({ data }) => {
+          if (data?.PROJ_CN) $("#summernote").summernote("code", data?.PROJ_CN);
+        });
+    },
+    postData() {
+      let text = this.getHtmlCode();
+      let data = { ICON_SN: this.sendData?.ICON_SN, POI_SN: 0, PROJ_CN: text };
+      useAxios.post("/admin/proj_infm", useForm(data)).then(({ data }) => {
+        if (!data?.RESULT)
+          return useAlert.error("소개말 수정", "저장에 실패하였습니다.");
+        useAlert.success("소개말 수정", "저장되었습니다.");
+        this.$emit("modalClose");
+      });
+    },
     getHtmlCode() {
       var markupStr = $("#summernote").summernote("code");
-      console.log(markupStr);
+      return markupStr;
     },
   },
 };

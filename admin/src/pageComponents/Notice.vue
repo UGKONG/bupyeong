@@ -64,7 +64,6 @@
 
 <script>
 import { useAlert, useForm, useAxios } from "../hook";
-import axios from "axios";
 
 export default {
   components: {
@@ -154,7 +153,6 @@ export default {
           .then(({ data }) => {
             if (!data.RESULT && data?.CAUSE == "SESSIONFAIL")
               return this.$store.dispatch("sessionFail");
-            // console.log(data);
             if (!data.RESULT) {
               useAlert.error("공지사항", "공지사항을 삭제 실패하였습니다.");
               return;
